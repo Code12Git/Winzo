@@ -11,15 +11,17 @@ datasource db {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique
-  username     String
-  name         String?
-  phone        String?
-  countryCode  Int?
-  Role         Role          @default(User)
-  password     String
-  transactions Transaction[]
+  id               Int           @id @default(autoincrement())
+  email            String        @unique
+  username         String
+  name             String?
+  phone            String?
+  countryCode      Int?
+  Role             Role          @default(User)
+  password         String
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  transactions     Transaction[]
 }
 
 model Transaction {
