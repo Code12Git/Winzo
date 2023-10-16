@@ -17,6 +17,7 @@ model User {
   name         String?
   phone        String?
   countryCode  Int?
+  Role         Role          @default(User)
   password     String
   transactions Transaction[]
 }
