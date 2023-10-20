@@ -1,8 +1,9 @@
-import React from "react";
-import { Metadata } from "next";
-import LeftBar from "@/components/common/LeftBar";
-import Footer from "@/components/common/Footer";
-import Navbar from "@/components/common/Navbar";
+import { Metadata } from "next/document";
+
+import "./globals.css";
+import LeftBar from "@/components/base/Leftbar";
+import Footer from "@/components/base/Footer";
+import Header from "@/components/base/Header";
 
 export const metadata: Metadata = {
 	title: "BetMaster",
@@ -14,17 +15,13 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const style = { flex: 1, marginRight: "20px" };
-
 	return (
 		<html lang="en">
 			<body>
-				<div style={{ display: "flex" }}>
-					<LeftBar style={style} />
-					<div style={{ flex: 3 }}>
-						<Navbar />
-						{children}
-					</div>
+				<Header />
+				<div className="flex">
+					<LeftBar />
+					<div className="flex-1">{children}</div>
 				</div>
 				<Footer />
 			</body>
