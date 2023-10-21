@@ -27,7 +27,6 @@ export const verifyToken = async (req, res, next) => {
 			}
 
 			req.user = user;
-
 			next();
 		} catch (err) {
 			return res.status(403).json({ error: "Token is not valid!" });
@@ -37,31 +36,31 @@ export const verifyToken = async (req, res, next) => {
 	}
 };
 
-export const verifyTokenAndAuthorization = (req, res, next) => {
-	verifyToken(req, res, () => {
-		if (req.user.id === req.params.id || req.user.Admin) {
-			next();
-		} else {
-			res
-				.status(403)
-				.json({ error: "You do not have permission to perform this action" });
-		}
-	});
-};
+// export const verifyTokenAndAuthorization = (req, res, next) => {
+// 	verifyToken(req, res, () => {
+// 		if (req.user.id === req.params.id || req.user.Admin) {
+// 			next();
+// 		} else {
+// 			res
+// 				.status(403)
+// 				.json({ error: "You do not have permission to perform this action" });
+// 		}
+// 	});
+// };
 
-export const verifyTokenAndAdmin = (req, res, next) => {
-	verifyToken(req, res, () => {
-		if (req.user.Admin) {
-			next();
-		} else {
-			res.status(403).json({ error: "You are not an admin" });
-		}
-	});
-};
+// export const verifyTokenAndAdmin = (req, res, next) => {
+// 	verifyToken(req, res, () => {
+// 		if (req.user.Admin) {
+// 			next();
+// 		} else {
+// 			res.status(403).json({ error: "You are not an admin" });
+// 		}
+// 	});
+// };
 
 export const verifyTokenAndSuperAdmin = (req, res, next) => {
 	verifyToken(req, res, () => {
-		if (req.user.SuperAdmin) {
+		if (req.user.Role === "SuperAdmin") {
 			next();
 		} else {
 			res.status(403).json({ error: "You are not a super admin" });

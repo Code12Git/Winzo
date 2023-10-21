@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoute from "./routes/auth.js";
+import forgotRoute from "./routes/forgot.js";
+import SuperadminRoute from "./routes/admin.js";
+
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
 
@@ -15,14 +18,8 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 app.use("/api/auth", authRoute);
-
-// CORS
-
-app.use(cors());
-
-// Enabling Cross-Origin Resource Sharing (CORS)
-// app.use("/api/auth", authRoute); // API for authentication
-
+app.use("/api", forgotRoute);
+app.use("/api/superadmin", SuperadminRoute);
 // Testing route to check if the server is working
 app.get("/", (req, res) => {
 	res.status(200).json("Working!");
@@ -30,5 +27,5 @@ app.get("/", (req, res) => {
 
 // Starting the server and listen on the specified port
 app.listen(port, () => {
-	console.log(`Server is up on PORT: ${port}`);
+	console.log(`🚀 Server is up on PORT: ${port}`);
 });
