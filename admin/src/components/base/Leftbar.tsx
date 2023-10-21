@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 const LeftBar = () => {
 	const pathname = usePathname();
 	return (
-		<div className="bg-gradient-to-b   border-r border-gray-400 hidden md:block  from-slate-900 via-gray-900 to-zinc-900 opacity-90 h-screen w-56">
+		<div className="bg-gradient-to-b  h-screen  border-r border-gray-400 hidden md:block  from-slate-900 via-gray-900 to-zinc-900 opacity-90 w-56">
 			<div className="p-4 font-bold text-white space-y-10">
 				{sidebarLinks.map((link) => {
 					return (

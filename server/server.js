@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoute from "./routes/auth.js";
 import forgotRoute from "./routes/forgot.js";
+import SuperadminRoute from "./routes/admin.js";
 
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/auth", authRoute);
 app.use("/api", forgotRoute);
-
+app.use("/api/superadmin", SuperadminRoute);
 // Testing route to check if the server is working
 app.get("/", (req, res) => {
 	res.status(200).json("Working!");

@@ -1,5 +1,4 @@
 import { Metadata } from "next/document";
-
 import "./globals.css";
 import LeftBar from "@/components/base/Leftbar";
 import Footer from "@/components/base/Footer";
