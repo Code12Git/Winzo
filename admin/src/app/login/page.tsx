@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,13 @@ function Login() {
 		password: "",
 	});
 	const [errors, setErrors] = useState<AuthError>({});
+
+	useEffect(() => {
+		const user = localStorage.getItem("user");
+		if (user) {
+			router.push("/");
+		}
+	}, []);
 
 	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;

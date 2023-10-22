@@ -1,21 +1,12 @@
-'use client'
 import axios, { AxiosInstance } from "axios";
-import { useEffect } from "react";
 
-const BASE_URL = "http://localhost:7000/api"
+const BASE_URL = "http://localhost:7000/api";
 
 interface Token {
     token: string;
 }
 
-interface User extends Token {
-    id: number;
-    username: string;
-    name: string;
-    email: string;
-}
-
-let token: string | undefined;
+let token = localStorage.getItem('token');
 
 export const publicRequest: AxiosInstance = axios.create({
     baseURL: BASE_URL,
@@ -23,4 +14,8 @@ export const publicRequest: AxiosInstance = axios.create({
 
 export const privateRequest: AxiosInstance = axios.create({
     baseURL: BASE_URL,
-})
+    headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token?.replace(/"/g, '')}`,
+    },
+});

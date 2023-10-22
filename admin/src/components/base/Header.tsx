@@ -1,8 +1,25 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 const Header = () => {
-	let admin = false;
+	const router = useRouter();
+	const adminJSON = localStorage.getItem("user");
+	if (adminJSON) {
+		const admin = JSON.parse(adminJSON);
+	} else {
+		console.log("User information is not available in localStorage.");
+	}
+
+	const LogoutHandler = () => {
+		localStorage.removeItem("user");
+		localStorage.removeItem("token");
+		router.push("/login");
+		toast.success("User logged out successfully");
+	};
+
 	return (
 		<div className="navbar z-10 bg-gray-900">
 			<div className="flex-1">
@@ -51,7 +68,7 @@ const Header = () => {
 				</div>
 
 				{/* Dropdown 2 */}
-				{admin ? (
+				{adminJSON ? (
 					<div className="dropdown dropdown-end">
 						<label tabIndex={0} className="btn btn-ghost btn-circle avatar">
 							<div className="w-10 rounded-full">
@@ -63,7 +80,7 @@ const Header = () => {
 								/>
 							</div>
 						</label>
-						<ul className="menu bg-black menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52">
+						<ul className="menu z-20 bg-black  menu-sm dropdown-content mt-3  p-2 shadow rounded-box w-52">
 							<li>
 								<a className="justify-between hover:bg-white rounded-xl">
 									Profile
@@ -73,7 +90,7 @@ const Header = () => {
 							<li className="hover:bg-white rounded-xl">
 								<a>Settings</a>
 							</li>
-							<li className="hover:bg-white rounded-xl">
+							<li onClick={LogoutHandler} className="hover:bg-white rounded-xl">
 								<a>Logout</a>
 							</li>
 						</ul>
