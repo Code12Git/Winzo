@@ -10,15 +10,13 @@ function RouteGuard({ allowedRoles, children }) {
     const role = user.user ? user.user.Role : null;
 
     if (!user) {
-      router.push("/access-denied");
+      router.push("/login");
     } else if (allowedRoles.includes(role)) {
-      // User has the required role, so do nothing
       return;
     } else {
-      // User doesn't have the required role, so redirect to the access-denied page
-      router.push("/access-denied");
+      router.push("/login");
     }
-  }, [allowedRoles]); // Include allowedRoles in the dependency array
+  }, [allowedRoles]); 
 
   return children;
 }
