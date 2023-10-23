@@ -16,3 +16,15 @@ export interface AuthError {
     username?: string,
     password?: string
 }
+
+export type User = {
+    id: number;
+    email: string;
+    username: string;
+    phone: string;
+    Role: string;
+    countryCode: string;
+    name?: string;
+
+
+}

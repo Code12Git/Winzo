@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { publicRequest } from "@/helpers/axios";
 import { AuthError, Login } from "@/types/types";
@@ -16,9 +16,15 @@ function Login() {
 	const [errors, setErrors] = useState<AuthError>({});
 
 	useEffect(() => {
-		const user = localStorage.getItem("user");
-		if (user) {
-			router.push("/");
+		const userString = localStorage.getItem("user");
+		const tokenString = localStorage.getItem("token");
+
+		if (userString && tokenString) {
+			const user = JSON.parse(userString);
+			const token = JSON.parse(tokenString);
+			if (user.user.Role === "SuperAdmin" && token) {
+				router.push("/");
+			}
 		}
 	}, []);
 
@@ -37,9 +43,13 @@ function Login() {
 
 			localStorage.setItem("user", JSON.stringify(response.data));
 			localStorage.setItem("token", JSON.stringify(response.data.token));
+
+			const userName = response.data.user.name;
+
 			if (admin === "SuperAdmin") {
-				toast.success("Admin Logged In!");
+				toast.success(`Welcome Back, ${userName}!`);
 				router.push("/");
+				window.location.reload();
 			} else {
 				router.push("/login");
 				toast.error("You are not allowed to access this page");
