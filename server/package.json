@@ -27,5 +27,9 @@
     "nodemailer": "^6.9.6",
     "validator": "^13.11.0",
     "vine": "^0.1.1"
+  },
+  "engines": {
+    "node": ">16"
   }
 }
+
