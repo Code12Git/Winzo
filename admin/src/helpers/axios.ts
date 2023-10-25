@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-const BASE_URL = "http://localhost:7000/api";
+const BASE_URL = "http://3.110.133.228:7000/api";
 
 interface Token {
     token: string;
