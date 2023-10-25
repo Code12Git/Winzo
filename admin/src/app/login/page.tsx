@@ -26,7 +26,7 @@ function Login() {
 				router.push("/");
 			}
 		}
-	}, []);
+	}, [router]);
 
 	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
