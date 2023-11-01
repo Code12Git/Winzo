@@ -1,6 +1,6 @@
 import LoginModal from "../modals/LoginModal";
 import RegisterModal from "../modals/RegisterModal";
-// import SideDrawer from "../common/SideDrawer";
+import SideDrawer from "../common/SideDrawer";
 
 const menuItems = [
 	{
@@ -31,12 +31,13 @@ const menuItems = [
 
 function Navbar() {
 	return (
-		<div className="relative w-full bg-white">
-			<div className="mx-auto navbar bg-neutral text-neutral-content flex max-w-8xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+		<div className="relative w-full ">
+			<div className="mx-auto navbar bg-gradient-to-r from-stone-900 via-gray-800 to-slate-800 flex max-w-8xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
 				<div className="inline-flex p-4 items-center space-x-6">
 					{/* <SideDrawer /> */}
 					<div className="flex items-center gap-2">
-						<img
+						<SideDrawer />
+					<img
 							src="/assets/Betting.jpeg"
 							className="w-10  h-10 lg:w-12 lg:h-12 rounded-3xl"
 							alt="Logo"
@@ -61,7 +62,7 @@ function Navbar() {
 				</div>
 				<div className="lg:block space-x-5">
 					<button type="button">
-						<LoginModal />
+					<LoginModal />
 					</button>
 					<button type="button">
 						<RegisterModal />
