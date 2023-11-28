@@ -17,8 +17,8 @@ export const sidebarLinks = [
 	{
 		id: 3,
 		icon: <SortDescIcon />,
-		route: "/content",
-		label: "Content",
+		route: "/session",
+		label: "Session",
 	},
 	{
 		id: 4,
@@ -29,7 +29,7 @@ export const sidebarLinks = [
 	{
 		id: 5,
 		icon: <PermDataSettingOutlined />,
-		route: "/permissions",
-		label: "Permissions",
+		route: "/qrcode",
+		label: "QrCode",
 	},
 ];

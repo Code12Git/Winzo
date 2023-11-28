@@ -1,4 +1,4 @@
-import { prisma } from "../db/conn.js";
+import prisma from "../db/conn.js";
 
 //Give Permission
 export const permission = async (req, res) => {

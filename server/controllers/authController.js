@@ -1,4 +1,4 @@
-import { prisma } from "../db/conn.js";
+import prisma from "../db/conn.js";
 import bcrypt from "bcryptjs";
 import { errors } from "@vinejs/vine";
 import { registerSchema } from "../validation/authSchema.js";
@@ -12,17 +12,20 @@ import { CustomErrorReporter } from "../validation/CustomErrorReporter.js";
 export const RegisterController = async (req, res) => {
 	try {
 		vine.errorReporter = () => new CustomErrorReporter();
+
 		const validator = vine.compile(registerSchema);
 		const payload = await validator.validate(req.body);
-		const emailCount = await prisma.user.count({
+
+		const existingUser = await prisma.user.findUnique({
 			where: {
 				email: payload.email,
 			},
 		});
 
-		if (emailCount > 0) {
-			res.status(409).json({ message: "Email already exists" });
+		if (existingUser) {
+			return res.status(409).json({ message: "Email already exists" });
 		}
+
 		const saltRounds = 10;
 		const hashedPassword = await bcrypt.hash(payload.password, saltRounds);
 
@@ -36,6 +39,7 @@ export const RegisterController = async (req, res) => {
 				password: hashedPassword,
 			},
 		});
+
 		return res.status(200).json({
 			success: true,
 			message: "User registered successfully",

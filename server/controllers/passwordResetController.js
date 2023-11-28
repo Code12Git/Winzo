@@ -1,4 +1,4 @@
-import { prisma } from "../db/conn.js";
+import prisma from "../db/conn.js";
 import generateRandomToken from "../helper/generateRandomToken.js";
 import { sendPasswordResetEmail } from "../services/EmailService.js";
 import bcrypt from "bcryptjs"; // Import the bcrypt library

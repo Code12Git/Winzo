@@ -25,6 +25,11 @@ export type User = {
     Role: string;
     countryCode: string;
     name?: string;
-
-
 }
+
+export type Session = {
+    id?: number;
+    color: string;
+    number: number;
+
+};

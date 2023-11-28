@@ -1,0 +1,6 @@
+.custom-modal {
+    width: 70%;
+    /* Adjust the width percentage as needed */
+    max-width: none;
+    /* Remove any max-width constraints */
+}

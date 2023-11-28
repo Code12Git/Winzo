@@ -16,12 +16,13 @@ model User {
   username         String
   name             String?
   phone            String?
-  countryCode      Int?
+  countryCode      String?
   Role             Role          @default(User)
   password         String
   resetToken       String?
   resetTokenExpiry DateTime?
   transactions     Transaction[]
+  Bet              Bet[]
 }
 
 model Transaction {
@@ -37,4 +38,29 @@ enum Role {
   SuperAdmin
   Admin
   User
+}
+
+model Bet {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  number    Int
+  color     String
+  betAmount Int
+  payout    Int?
+  isWinner  Boolean?
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  number    Int
+  color     String
+  createdAt DateTime @default(now())
+}
+
+model Qr {
+  id        Int      @id @default(autoincrement())
+  qrcode    String
+  createdAt DateTime @default(now())
 }

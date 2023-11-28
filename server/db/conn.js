@@ -2,16 +2,13 @@ import { PrismaClient } from "@prisma/client";
 
 let prisma;
 
-// Create a singleton instance of PrismaClient
-if (!prisma) {
-	prisma = new PrismaClient();
+if (process.env.NODE_ENV === "production") {
+	prisma = prisma || new PrismaClient();
+} else {
+	if (!global.prisma) {
+		global.prisma = new PrismaClient();
+	}
+	prisma = global.prisma;
 }
 
-// In development mode, you can clear the PrismaClient instance for hot-reloading
-if (process.env.NODE_ENV !== "production") {
-	prisma.$disconnect();
-	prisma = new PrismaClient();
-}
-
-// Export the Prisma instance
-export { prisma };
+export default prisma;

@@ -1,22 +1,52 @@
-import React from "react"; // Removed type import
-
-import Box from "@mui/material/Box";
+import React, { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { MenuIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import {  MenuIcon } from "lucide-react";
+import { SidebarLinks } from "../constants/SidebarLinks";
+import {NavLink} from 'react-router-dom'
+const SidebarContent = ({ open }) => {
+  const [activeItem, setActiveItem] = useState(null);
 
-// Removed the 'type Anchor' declaration
+  // Define the items for each dropdown option
+  const dropdownItems = {
+    Games: ["Instant Games", "Slots", "Jackpot Games","Mega Ways","Book","Provably Fair","Virtual Sports","Lottery Games"],
+    LiveCasino: ["Baccarat", "Blackjack", "Roulette","Andar Bahar"],
+    Sport: ["Live Betting", "Cricket"],
+    More: ["About Us"],
+  };
+
+  return (
+    <div className="bg-gradient-to-b border-r border-gray-400  md:block from-slate-900 via-gray-900 to-zinc-900 opacity-90 h-screen w-72">
+      <div className="p-6 w-72 font-bold text-white space-y-4 md:space-y-10">
+        <div className="text-2xl md:text-3xl flex flex-col gap-4 md:gap-8">
+          <p className="bg-gradient-to-r from-orange-500 via-red-400 to-blue-400 text-transparent bg-clip-text text-3xl">
+            BetMaster
+          </p>
+
+          {SidebarLinks.map((item) => (
+           <NavLink to={item.link}> <motion.div
+              className="flex flex-col md:flex-row items-center justify-between cursor-pointer"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.8 }}
+              key={item.title}
+            >
+              <div className="flex bg-gradient-to-r hover:from-purple-900 hover:via-violet-900 hover:to-purple-900 w-full p-1 rounded-lg items-center gap-1">
+                <p>{item.icon}</p>
+                <p className="text-md md:text-lg">{item.title}</p>
+              </div>
+            
+            </motion.div>
+            </NavLink>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function SideDrawer() {
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     left: false,
   });
 
@@ -31,56 +61,22 @@ export default function SideDrawer() {
     setState({ ...state, [anchor]: open });
   };
 
-  const list = (anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-
   return (
-     <div>
-      {(['left'].map((anchor) => (
+    <div>
+      {(["left"].map((anchor) => (
         <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}> <MenuIcon className='text-white' />
-</Button>
+          <Button onClick={toggleDrawer(anchor, true)}>
+            <MenuIcon className="text-white" />
+          </Button>
           <Drawer
             anchor={anchor}
             open={state[anchor]}
             onClose={toggleDrawer(anchor, false)}
           >
-            {list(anchor)}
+            <SidebarContent open={state[anchor]} />
           </Drawer>
         </React.Fragment>
-)))}
+      )))}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-const BASE_URL = "https://winzo.onrender.com/api";
+const BASE_URL = "http://localhost:7000/api";
 
 interface Token {
     token: string;
@@ -17,5 +17,15 @@ export const privateRequest: AxiosInstance = axios.create({
     headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token?.replace(/"/g, '')}`,
+
     },
 });
+
+export const formRequest: AxiosInstance = axios.create({
+    baseURL: BASE_URL,
+    headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token?.replace(/"/g, '')}`,
+
+    },
+})
