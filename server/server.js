@@ -7,6 +7,8 @@ import SuperadminRoute from "./routes/admin.js";
 import sessionRoute from "./routes/session.js";
 import betRoute from "./routes/bet.js";
 import qrRoute from "./routes/qr.js";
+import transactionRoute from "./routes/transaction.js";
+import screenshotRoute from "./routes/screenshot.js";
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
 
@@ -25,6 +27,8 @@ app.use("/api/superadmin", SuperadminRoute);
 app.use("/api/session", sessionRoute);
 app.use("/api/bet", betRoute);
 app.use("/api/qr", qrRoute);
+app.use("/api/transaction", transactionRoute);
+app.use("/api/screenshot", screenshotRoute);
 
 // Testing route to check if the server is working
 app.get("/", (req, res) => {

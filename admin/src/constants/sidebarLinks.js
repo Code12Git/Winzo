@@ -1,6 +1,6 @@
 import { Payment, PermDataSettingOutlined } from "@mui/icons-material";
 import { LayoutDashboardIcon, User, SortDescIcon } from "lucide-react";
-
+import { Screenshot } from "@mui/icons-material";
 export const sidebarLinks = [
 	{
 		id: 1,
@@ -31,5 +31,11 @@ export const sidebarLinks = [
 		icon: <PermDataSettingOutlined />,
 		route: "/qrcode",
 		label: "QrCode",
+	},
+	{
+		id: 5,
+		icon: <Screenshot />,
+		route: "/screenshots",
+		label: "Screenshot",
 	},
 ];

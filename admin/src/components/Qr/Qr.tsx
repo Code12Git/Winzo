@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 const Qr: React.FC = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [file, setFile] = useState<File | null>(null);
-	console.log(file);
 
 	const clickChangeHandler = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

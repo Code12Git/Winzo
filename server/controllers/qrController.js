@@ -6,16 +6,11 @@ export const createQr = async (req, res) => {
 		if (!req.files || !req.files.qrcode || req.files.qrcode.length === 0) {
 			return res.status(400).json("QrCode file is required");
 		}
-		console.log("Req files:", req.files.qrcode);
 		const qrcodeLocalPath = req.files.qrcode[0].path;
-		console.log("QrCodeLocalPath:", qrcodeLocalPath);
 		const uploadedQr = await uploadOnCloudinary(qrcodeLocalPath);
-		console.log("UploadedQr", uploadedQr);
 		if (!uploadedQr) {
 			return res.status(400).json("Error uploading QrCode to Cloudinary");
 		}
-		console.log("Created");
-		console.log(uploadedQr.url);
 
 		const createdQr = await prisma.qr.create({
 			data: {

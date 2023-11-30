@@ -46,7 +46,7 @@ let adminCreatedSession = false;
 // 	adminCreatedSession = false; // Reset adminCreatedSession flag for the next cycle
 // };
 
-// setInterval(checkAndCreateRandomSession, 60000); // Check every minute
+// setInterval(checkAndCreateRandomSession, 120000);
 
 export const createSession = async (req, res) => {
 	const { color, number } = req.body;

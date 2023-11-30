@@ -33,3 +33,23 @@ export type Session = {
     number: number;
 
 };
+
+export type TransactionDetails = {
+    balance: number;
+    betAmount: number;
+    deposit: number;
+    withdrawal: number;
+    id: number;
+    transactionId: string;
+    user: {
+        email: string;
+        id: number;
+        name: string;
+        username: string;
+    };
+};
+
+export type ScreenshotDetails = {
+    id: number,
+    screenshot: string
+}
