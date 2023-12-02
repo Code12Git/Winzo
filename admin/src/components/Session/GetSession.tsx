@@ -5,6 +5,7 @@ import { Session } from "@/types/types";
 import CreateSession from "./CreateSession";
 import UpdateSession from "./UpdateSession";
 import toast from "react-hot-toast";
+import Countdown from "./Countdown";
 const GetSession = () => {
 	const [sessions, setSessions] = useState<Session[]>([]);
 
@@ -43,15 +44,13 @@ const GetSession = () => {
 		}
 	};
 
-	const updateHandler = async (id) => {
-		try {
-			const res = await privateRequest.put(`/session/${id}`);
-			console.log(res);
-		} catch (err) {}
-	};
 	return (
 		<>
-			<CreateSession getSession={fetchData} />
+			<Countdown
+				className="flex items-center m-auto mt-12"
+				getSession={fetchData}
+			/>
+			<CreateSession />
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-12">
 				{sessions.map((session) => (
 					<div key={session.id} className="bg-white rounded-lg p-4 shadow-md">
@@ -64,7 +63,6 @@ const GetSession = () => {
 								></div>
 								<p className="font-semibold">ID: {session.id}</p>
 							</div>
-							<p>Price: {session.price}</p>
 							<p>Color: {session.color}</p>
 							<p>Number: {session.number}</p>
 							<div className="flex justify-between mt-4">

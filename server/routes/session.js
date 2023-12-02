@@ -3,6 +3,8 @@ import {
 	createSession,
 	deleteSession,
 	getAllSession,
+	getLatestSession,
+	remainingTime,
 	updateSession,
 } from "../controllers/SessionController.js";
 import { verifyTokenAndSuperAdmin } from "../middleware/verifyToken.js";
@@ -20,5 +22,11 @@ router.delete("/:id", verifyTokenAndSuperAdmin, deleteSession);
 
 // Getting the session
 router.get("/", getAllSession);
+
+// Remaining Time
+router.get("/remaining", remainingTime);
+
+// Latest Session
+router.get("/latest-session", getLatestSession);
 
 export default router;

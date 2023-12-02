@@ -53,3 +53,11 @@ export type ScreenshotDetails = {
     id: number,
     screenshot: string
 }
+
+export type BalanceDetails = {
+    id: number,
+    email: string,
+    name: string,
+    username: string,
+    balance: number
+}

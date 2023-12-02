@@ -30,42 +30,32 @@ const UserCard: React.FC<UserCardProps> = ({ user, fetchUsers }) => {
 	};
 
 	return (
-		<div className="flex bg-gradient-to-r from-purple-200 via-violet-200 to-purple-400 p-4 rounded-lg w-full">
-			<div className="flex items-center justify-between w-full">
-				<div className="flex items-center space-x-4">
-					<div className="bg-purple-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
-						{user.id}
-					</div>
-					<div className="avatar">
-						<div className="w-12 rounded-full">
-							<Image
-								src="/assets/avatar/avatar.jpg"
-								alt="assets"
-								width={100}
-								height={100}
-							/>
-						</div>
-					</div>
-					<p className="text-purple-800 text-xl">{user.email}</p>
-					<p className="text-purple-800 text-xl">{user.username}</p>
-					<p className="text-purple-800 text-xl">
+		<div className="bg-gray-200 rounded-lg p-4 mb-4 md:mb-0 md:flex md:items-center md:justify-between md:px-6">
+			<div className="md:flex md:items-center">
+				<div className="bg-purple-500 rounded-full w-12 h-12 flex items-center justify-center text-white font-bold mb-4 md:mb-0">
+					{user.id}
+				</div>
+				<div className="md:ml-4">
+					<p className="text-lg font-semibold text-purple-800">
+						{user.username}
+					</p>
+					<p className="text-sm text-purple-600">{user.email}</p>
+					<p className="text-sm text-purple-600">
 						{user.countryCode}
 						{user.phone}
 					</p>
-					<p className="text-purple-800 text-xl">{user.Role}</p>
+					<p className="text-sm text-purple-600">{user.Role}</p>
 				</div>
-				<div className="flex space-x-4 items-center">
-					<UserModal user={user} />
-					<RoleModal fetchUsers={fetchUsers} user={user} />
-					<button
-						className="bg-gradient-to-r from-pink-500 text-white font-sans via-red-500 to-blue-500 to-90% p-2 rounded-lg hover:from-blue-500 hover:via-sky-500 hover:to-red-500 hover:scale-110 transition-transform delay-200 ease-in-out"
-						onClick={() => deleteHandler(user.id)}
-					>
-						<span className="text-white font-sans relative z-10">
-							Delete User
-						</span>
-					</button>
-				</div>
+			</div>
+			<div className="flex mt-4 md:mt-0">
+				<UserModal user={user} />
+				<RoleModal fetchUsers={fetchUsers} user={user} />
+				<button
+					className="bg-red-500 text-white font-sans p-2 rounded-lg hover:bg-red-600 transition-colors duration-300 ease-in-out text-sm"
+					onClick={() => deleteHandler(user.id)}
+				>
+					<span>Delete User</span>
+				</button>
 			</div>
 		</div>
 	);

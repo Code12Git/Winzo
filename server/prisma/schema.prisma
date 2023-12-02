@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Prisma schema file
 
 generator client {
   provider = "prisma-client-js"
@@ -24,11 +23,11 @@ model User {
   Bet              Bet[]
   Screenshot       Screenshot[]
   Transaction      Transaction[]
+  balance          Int?
 }
 
 model Transaction {
   id            Int      @id @default(autoincrement())
-  balance       Int?
   deposit       Int
   withdrawal    Int?
   user          User     @relation(fields: [userId], references: [id])

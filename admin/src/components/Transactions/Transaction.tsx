@@ -43,7 +43,7 @@ const Transaction = () => {
 							<h2 className="text-xl font-bold mb-2">
 								Transaction ID: {transaction.transactionId}
 							</h2>
-							<p>Balance: {transaction.balance}</p>
+
 							<p>Deposit: {transaction.deposit}</p>
 							<p>Withdrawal: {transaction?.withdrawal}</p>
 							<p>Bet Amount: {transaction.betAmount}</p>

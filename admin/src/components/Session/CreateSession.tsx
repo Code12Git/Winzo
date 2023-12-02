@@ -4,11 +4,7 @@ import { privateRequest } from "@/helpers/axios";
 import toast from "react-hot-toast";
 import { Session } from "@/types/types";
 
-interface CreateSessionProps {
-	getSession: () => void;
-}
-
-const CreateSession: React.FC<CreateSessionProps> = ({ getSession }) => {
+const CreateSession = () => {
 	const [session, setSession] = useState<Session>({
 		number: 1,
 		color: "red",
@@ -51,7 +47,6 @@ const CreateSession: React.FC<CreateSessionProps> = ({ getSession }) => {
 			console.log(res);
 			if (res.data.success === true) {
 				toast.success("Session updated successfully");
-				getSession();
 			} else {
 				toast.error("Failed to update session");
 			}
@@ -101,7 +96,7 @@ const CreateSession: React.FC<CreateSessionProps> = ({ getSession }) => {
 						))}
 					</select>
 				</div>
-				
+
 				<button
 					type="submit"
 					className="p-2 bg-slate-700 rounded-lg text-white transition-transform ease-in-out delay-200 duration-200 hover:scale-110"

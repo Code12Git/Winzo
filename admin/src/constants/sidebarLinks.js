@@ -1,6 +1,7 @@
 import { Payment, PermDataSettingOutlined } from "@mui/icons-material";
 import { LayoutDashboardIcon, User, SortDescIcon } from "lucide-react";
 import { Screenshot } from "@mui/icons-material";
+import { AccountBalance } from "@mui/icons-material";
 export const sidebarLinks = [
 	{
 		id: 1,
@@ -37,5 +38,11 @@ export const sidebarLinks = [
 		icon: <Screenshot />,
 		route: "/screenshots",
 		label: "Screenshot",
+	},
+	{
+		id: 6,
+		icon: <AccountBalance />,
+		route: "/balance",
+		label: "Balance",
 	},
 ];

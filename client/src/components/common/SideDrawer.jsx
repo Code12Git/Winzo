@@ -5,16 +5,14 @@ import { motion } from "framer-motion";
 import {  MenuIcon } from "lucide-react";
 import { SidebarLinks } from "../constants/SidebarLinks";
 import {NavLink} from 'react-router-dom'
-const SidebarContent = ({ open }) => {
-  const [activeItem, setActiveItem] = useState(null);
+const SidebarContent = () => {
 
-  // Define the items for each dropdown option
-  const dropdownItems = {
-    Games: ["Instant Games", "Slots", "Jackpot Games","Mega Ways","Book","Provably Fair","Virtual Sports","Lottery Games"],
-    LiveCasino: ["Baccarat", "Blackjack", "Roulette","Andar Bahar"],
-    Sport: ["Live Betting", "Cricket"],
-    More: ["About Us"],
-  };
+ 
+  const handleLogout = () => {
+  localStorage.removeItem('user'); 
+  localStorage.removeItem('token');
+  window.location.reload();
+};
 
   return (
     <div className="bg-gradient-to-b border-r border-gray-400  md:block from-slate-900 via-gray-900 to-zinc-900 opacity-90 h-screen w-72">
@@ -35,10 +33,12 @@ const SidebarContent = ({ open }) => {
                 <p>{item.icon}</p>
                 <p className="text-md md:text-lg">{item.title}</p>
               </div>
-            
+    
             </motion.div>
             </NavLink>
           ))}
+          <button type="button" onClick={handleLogout} className=" bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl">Logout</button>
+
         </div>
       </div>
     </div>

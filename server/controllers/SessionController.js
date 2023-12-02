@@ -2,51 +2,75 @@ import prisma from "../db/conn.js";
 import cron from "node-cron";
 // Creating a session
 
-// const specificSessions = [
-// 	{ color: "red", number: 1 },
-// 	{ color: "red", number: 3 },
-// 	{ color: "red", number: 5 },
-// 	{ color: "blue", number: 2 },
-// 	{ color: "blue", number: 4 },
-// 	{ color: "blue", number: 6 },
-// 	{ color: "green", number: 7 },
-// 	{ color: "green", number: 9 },
-// 	{ color: "green", number: 8 },
-// ];
+const specificSessions = [
+	{ color: "red", number: 1 },
+	{ color: "red", number: 3 },
+	{ color: "red", number: 5 },
+	{ color: "blue", number: 2 },
+	{ color: "blue", number: 4 },
+	{ color: "blue", number: 6 },
+	{ color: "green", number: 7 },
+	{ color: "green", number: 9 },
+	{ color: "green", number: 8 },
+];
 
 let adminCreatedSession = false;
+let lastIntervalExecution = Date.now();
+const createRandomSession = async () => {
+	const randomIndex = Math.floor(Math.random() * specificSessions.length);
+	const { color, number } = specificSessions[randomIndex];
 
-// const createRandomSession = async () => {
-// 	const randomIndex = Math.floor(Math.random() * specificSessions.length);
-// 	const { color, number } = specificSessions[randomIndex];
+	try {
+		const session = await prisma.session.create({
+			data: {
+				color,
+				number,
+			},
+		});
 
-// 	try {
-// 		const session = await prisma.session.create({
-// 			data: {
-// 				color,
-// 				number,
-// 			},
-// 		});
+		console.log("Random Session Created:", session);
+	} catch (err) {
+		console.error("Error creating random session:", err);
+	}
+};
 
-// 		console.log("Random Session Created:", session);
-// 	} catch (err) {
-// 		console.error("Error creating random session:", err);
-// 	}
-// };
+const getRemainingTime = () => {
+	const currentTime = Date.now();
+	const timeSinceLastExecution = currentTime - lastIntervalExecution;
+	const remainingTime = 60000 - timeSinceLastExecution; // Calculate remaining time until next execution
+	return remainingTime;
+};
 
-// const checkAndCreateRandomSession = () => {
-// 	if (!adminCreatedSession) {
-// 		console.log("Session not created by admin. Creating a random session...");
-// 		createRandomSession();
-// 	} else {
-// 		console.log(
-// 			"Session already created by admin. Skipping random session creation."
-// 		);
-// 	}
-// 	adminCreatedSession = false; // Reset adminCreatedSession flag for the next cycle
-// };
+const formatCountdown = (milliseconds) => {
+	const seconds = Math.floor((milliseconds / 1000) % 60);
+	const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
 
-// setInterval(checkAndCreateRandomSession, 120000);
+	return `${minutes} minutes ${seconds} seconds`;
+};
+
+export const remainingTime = (req, res) => {
+	const remainingTime = getRemainingTime();
+	const formattedTime = formatCountdown(remainingTime);
+	res.status(200).json({ remainingTime: formattedTime });
+};
+
+const checkAndCreateRandomSession = () => {
+	// Update last execution time
+	const currentTime = Date.now();
+	lastIntervalExecution = currentTime;
+	if (!adminCreatedSession) {
+		console.log("Session not created by admin. Creating a random session...");
+		createRandomSession();
+	} else {
+		console.log(
+			"Session already created by admin. Skipping random session creation."
+		);
+	}
+	adminCreatedSession = false;
+};
+checkAndCreateRandomSession();
+
+setInterval(checkAndCreateRandomSession, 60000);
 
 export const createSession = async (req, res) => {
 	const { color, number } = req.body;
@@ -71,7 +95,7 @@ export const createSession = async (req, res) => {
 			session,
 		});
 
-		adminCreatedSession = true; // Set adminCreatedSession flag when session is created
+		adminCreatedSession = true;
 	} catch (err) {
 		res.status(500).json({ error: err.message, success: false });
 	}
@@ -139,4 +163,16 @@ export const getAllSession = async (req, res) => {
 	}
 };
 
-// setInterval(createSession, 600);
+export const getLatestSession = async (req, res) => {
+	try {
+		const latestSession = await prisma.session.findFirst({
+			orderBy: { createdAt: "desc" },
+		});
+
+		const latestSessionName = latestSession ? latestSession.id : "";
+
+		res.status(200).json({ latestSessionName });
+	} catch (err) {
+		res.status(500).json({ message: err.message });
+	}
+};
