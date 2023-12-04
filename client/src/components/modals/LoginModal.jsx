@@ -43,7 +43,6 @@ const inputChangeHandler = (e) => {
   } catch (err) {
     const inputerror = err.response.data.errors;
     const error = err.response.data.message;
-    console.log(error);
     toast.error(error);
     setErrors(inputerror);
   }

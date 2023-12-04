@@ -50,7 +50,6 @@ export default function RedModal() {
       setBetAmount(betAmount - 1);
     }
   };
-  console.log(selectedColor,selectedNumber,betAmount)
 
   const user = JSON.parse(localStorage.getItem('user'));
   
@@ -62,7 +61,6 @@ export default function RedModal() {
         betAmount: betAmount,
       });
       
-      console.log('Submitted:', response.data);
       toast.success('Bet placed Successfully!')
     } catch (error) {
       console.error('Submission Error:', error);

@@ -45,7 +45,6 @@ const Transaction = () => {
 				data.append("screenshot", file);
 
 				const screenshotRes = await formRequest.post("/screenshot", data);
-				console.log(screenshotRes.data);
 				toast.success("Screenshot changed successfully");
 			} else {
 				toast.error("Please upload a screenshot.");
@@ -56,7 +55,6 @@ const Transaction = () => {
 				"/transaction",
 				transaction
 			);
-			console.log(transactionRes.data);
 		} catch (error) {
 			console.error("Error uploading screenshot or transaction:", error);
 		}

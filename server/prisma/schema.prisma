@@ -56,10 +56,11 @@ model Bet {
 }
 
 model Session {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   number    Int
   color     String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  startTime DateTime?
 }
 
 model Qr {

@@ -8,7 +8,6 @@ export default function GreenModal() {
   const [betAmount, setBetAmount] = useState(100);
   const [selectedColor, setSelectedColor] = useState('green');
 const [isBetPlaced, setIsBetPlaced] = useState(false); 
-  const [cooldown, setCooldown] = useState(false); 
   
 
   const calculatePotentialWin = () => {
@@ -51,24 +50,18 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
       setBetAmount(betAmount - 1);
     }
   };
-  console.log(selectedColor,selectedNumber,betAmount)
 
   const user = JSON.parse(localStorage.getItem('user'));
   
  const handleSubmit = async () => {
-  if (isBetPlaced || cooldown) {
-    toast.error('Please wait before placing another bet.');
-    return;
-  }
+ 
 
-  setIsBetPlaced(true);
-  try {
+   try {
     const response = await privateRequest.post('/bet', {
       color: selectedColor,
       number: selectedNumber,
       betAmount: betAmount,
     });
-    console.log(response.data);
     toast.success('Bet placed Successfully!');
     toast.error(response.data.message);
   } catch (error) {

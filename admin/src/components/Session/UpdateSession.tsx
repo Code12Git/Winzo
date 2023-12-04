@@ -17,7 +17,6 @@ export default function UpdateSession({ id, fetchData }: Props) {
 	const [session, setSession] = useState<Session>({
 		color: "red",
 		number: 1,
-		price: 0,
 	});
 	const [filteredNumbers, setFilteredNumbers] = useState<number[]>([]);
 
@@ -126,17 +125,6 @@ export default function UpdateSession({ id, fetchData }: Props) {
 									</option>
 								))}
 							</select>
-						</div>
-						<div className="mt-2 flex flex-col gap-2">
-							<label>Price</label>
-							<input
-								name="price"
-								value={session.price}
-								onChange={handleChange}
-								type="number"
-								placeholder="Price"
-								className="w-52 border border-red-400 p-2 rounded"
-							/>
 						</div>
 
 						<div className="mt-4">

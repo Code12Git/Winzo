@@ -1,74 +1,67 @@
-"use client";
 import React, { useState, useEffect } from "react";
+import { publicRequest } from "@/helpers/axios";
 
-interface CreateSessionProps {
-	getSession: () => void;
+interface CountdownProps {
+	fetchSession: () => void;
 }
 
-const Countdown: React.FC<CreateSessionProps> = ({ getSession }) => {
-	const initialCountdown = {
-		minutes: 1,
-		seconds: 0,
-	};
+interface CountdownState {
+	minutes: number;
+	seconds: number;
+}
 
-	const [countdown, setCountdown] = useState(initialCountdown);
-	const [countdownEnded, setCountdownEnded] = useState(false);
-	const [isRed, setIsRed] = useState(false);
+const Countdown: React.FC<CountdownProps> = ({ fetchSession }) => {
+	const [countdown, setCountdown] = useState<CountdownState>({
+		minutes: 0,
+		seconds: 0,
+	});
+	const [isRed, setIsRed] = useState<boolean>(false);
 
 	useEffect(() => {
-		let countdownInterval: any;
+		let countdownInterval: NodeJS.Timeout;
 
 		const fetchRemainingTime = async () => {
 			try {
-				const response = await fetch(
-					"http://localhost:7000/api/session/remaining"
-				);
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-
-				const data = await response.json();
+				const response = await publicRequest.get("/session/remaining");
+				const data = response.data;
 				const formattedTime = data.remainingTime;
-				console.log(data);
 
-				const [minutes, seconds] = formattedTime.split(":").map(Number);
-				setCountdown({ minutes, seconds });
-
-				countdownInterval = setInterval(() => {
-					setCountdown((prevCountdown) => {
-						const updatedCountdown = { ...prevCountdown };
-
-						if (updatedCountdown.seconds > 0) {
-							updatedCountdown.seconds--;
-						} else {
-							if (updatedCountdown.minutes === 0) {
-								setIsRed(false);
-								clearInterval(countdownInterval);
-								getSession();
-								return { minutes: 0, seconds: 0 };
-							}
-							updatedCountdown.seconds = 59;
-							updatedCountdown.minutes--;
-						}
-
-						if (
-							updatedCountdown.minutes === 0 &&
-							updatedCountdown.seconds === 0
-						) {
-							setIsRed(false);
-							clearInterval(countdownInterval);
-							getSession();
-						} else {
-							setIsRed(false);
-						}
-
-						return updatedCountdown;
-					});
-				}, 1000);
+				const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
+				if (timeParts && timeParts.length === 3) {
+					const minutes = parseInt(timeParts[1]);
+					const seconds = parseInt(timeParts[2]);
+					setCountdown({ minutes, seconds });
+					startCountdown({ minutes, seconds });
+				}
 			} catch (error) {
 				console.error("Error fetching remaining time:", error);
 			}
+		};
+
+		const startCountdown = ({ minutes, seconds }: CountdownState) => {
+			let remainingSeconds = minutes * 60 + seconds;
+
+			countdownInterval = setInterval(() => {
+				if (remainingSeconds > 0) {
+					remainingSeconds--;
+
+					const mins = Math.floor(remainingSeconds / 60);
+					const secs = remainingSeconds % 60;
+
+					setCountdown({ minutes: mins, seconds: secs });
+
+					if (remainingSeconds <= 20 && remainingSeconds > 0) {
+						setIsRed(true);
+					} else {
+						setIsRed(false);
+					}
+				} else {
+					setIsRed(true);
+					clearInterval(countdownInterval);
+					fetchSession();
+					fetchRemainingTime();
+				}
+			}, 1000);
 		};
 
 		fetchRemainingTime();
@@ -76,14 +69,14 @@ const Countdown: React.FC<CreateSessionProps> = ({ getSession }) => {
 		return () => {
 			clearInterval(countdownInterval);
 		};
-	}, [getSession]);
+	}, [fetchSession]);
 
 	return (
-		<div className="grid grid-flow-col p-12 gap-5 text-center auto-cols-max">
+		<div className="grid grid-flow-col gap-5 text-center auto-cols-max">
 			<div className={`flex flex-col ${isRed ? "text-red-600" : "text-black"}`}>
 				<span className="countdown font-mono text-5xl">
 					<span style={{ "--value": countdown.minutes }}>
-						{countdown.minutes}
+						{String(countdown.minutes).padStart(2, "0")}
 					</span>
 				</span>
 				min
@@ -91,7 +84,7 @@ const Countdown: React.FC<CreateSessionProps> = ({ getSession }) => {
 			<div className={`flex flex-col ${isRed ? "text-red-600" : "text-black"}`}>
 				<span className="countdown font-mono text-5xl">
 					<span style={{ "--value": countdown.seconds }}>
-						{countdown.seconds}
+						{String(countdown.seconds).padStart(2, "0")}
 					</span>
 				</span>
 				sec

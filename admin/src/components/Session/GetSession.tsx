@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { privateRequest } from "@/helpers/axios";
+import { publicRequest, privateRequest } from "@/helpers/axios";
 import { Session } from "@/types/types";
 import CreateSession from "./CreateSession";
 import UpdateSession from "./UpdateSession";
@@ -10,14 +10,14 @@ const GetSession = () => {
 	const [sessions, setSessions] = useState<Session[]>([]);
 
 	useEffect(() => {
-		fetchData();
+		fetchAllSession();
 	}, []);
-	const fetchData = async () => {
+	const fetchAllSession = async () => {
 		try {
-			const res = await privateRequest.get("/session");
-			setSessions(res.data);
+			const sessionData = await publicRequest.get("/session");
+			setSessions(sessionData.data);
 		} catch (error) {
-			console.error("Error fetching sessions:", error);
+			console.error("Error fetching session:", error);
 		}
 	};
 
@@ -38,7 +38,7 @@ const GetSession = () => {
 		try {
 			await privateRequest.delete(`/session/${id}`);
 			toast.success("Session deleted Successfully!");
-			fetchData();
+			fetchAllSession();
 		} catch (err: any) {
 			toast.error(err.message);
 		}
@@ -48,7 +48,7 @@ const GetSession = () => {
 		<>
 			<Countdown
 				className="flex items-center m-auto mt-12"
-				getSession={fetchData}
+				fetchSession={fetchAllSession}
 			/>
 			<CreateSession />
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-12">
@@ -67,7 +67,7 @@ const GetSession = () => {
 							<p>Number: {session.number}</p>
 							<div className="flex justify-between mt-4">
 								<button>
-									<UpdateSession fetchData={fetchData} id={session.id} />
+									<UpdateSession fetchData={fetchAllSession} id={session.id} />
 								</button>
 								<button
 									onClick={() => deleteHandler(session.id)}

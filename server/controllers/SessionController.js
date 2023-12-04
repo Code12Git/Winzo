@@ -13,22 +13,25 @@ const specificSessions = [
 	{ color: "green", number: 9 },
 	{ color: "green", number: 8 },
 ];
+export const sessionUserBets = new Map(); // Initialize session and user bet tracking
 
 let adminCreatedSession = false;
 let lastIntervalExecution = Date.now();
 const createRandomSession = async () => {
 	const randomIndex = Math.floor(Math.random() * specificSessions.length);
 	const { color, number } = specificSessions[randomIndex];
-
+	const sessionIdentifier = `${color}_${number}`;
+	sessionUserBets.set(sessionIdentifier, new Set());
 	try {
+		const currentTime = new Date();
 		const session = await prisma.session.create({
 			data: {
 				color,
 				number,
+				createdAt: currentTime,
+				startTime: new Date(currentTime.getTime() + 60000),
 			},
 		});
-
-		// console.log("Random Session Created:", session);
 	} catch (err) {
 		console.error("Error creating random session:", err);
 	}
@@ -38,7 +41,6 @@ export const getRemainingTime = () => {
 	const currentTime = Date.now();
 	const timeSinceLastExecution = currentTime - lastIntervalExecution;
 	const remainingTime = 60000 - timeSinceLastExecution;
-
 	return remainingTime;
 };
 
@@ -60,7 +62,6 @@ const checkAndCreateRandomSession = () => {
 	const currentTime = Date.now();
 	lastIntervalExecution = currentTime;
 	if (!adminCreatedSession) {
-		console.log("Session not created by admin. Creating a random session...");
 		createRandomSession();
 	} else {
 		console.log(
@@ -96,7 +97,7 @@ export const createSession = async (req, res) => {
 			session,
 		});
 
-		adminCreatedSession = true;
+		adminCreatedSession = true; // Set adminCreatedSession flag when session is created
 	} catch (err) {
 		res.status(500).json({ error: err.message, success: false });
 	}
@@ -105,14 +106,10 @@ export const createSession = async (req, res) => {
 // Updating a session
 export const updateSession = async (req, res) => {
 	const { id } = req.params;
-	const { price, color, number } = req.body;
+	const { color, number } = req.body;
 
 	try {
 		const sessionDataToUpdate = {};
-
-		if (price !== undefined) {
-			sessionDataToUpdate.price = price;
-		}
 
 		if (color !== undefined) {
 			sessionDataToUpdate.color = color;

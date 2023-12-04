@@ -37,15 +37,14 @@ const inputChangeHandler = (e) => {
   const submitHandler=async(e)=>{
     e.preventDefault()
     try{
-      const res=await publicRequest.post('/auth/register',credentials)
-      console.log(res.data)
+      await publicRequest.post('/auth/register',credentials)
       toast.success("Registration completed successfully")
+      
     }catch(err){
 const inputerror = err.response.data.errors;
 			const error = err.response.data.message;
-      console.log(error)
 			toast.error(error);
-			setErrors(inputerror);
+		setErrors(inputerror);
     }
   }
   return (

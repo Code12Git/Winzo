@@ -8,7 +8,7 @@ const ColorBet = () => {
         <h1 className='bg-gradient-to-r from-violet-700 via-purple-800 to-cyan-700 bg-clip-text text-transparent text-4xl'>Which Color you want to choose?</h1>
         <div className='flex justify-between mt-12'>
             <button><RedModal /></button>
-           <button ><GreenModal /></button>
+          <button ><GreenModal /></button>
             <button><BlueModal /></button>
         </div>
     </div>

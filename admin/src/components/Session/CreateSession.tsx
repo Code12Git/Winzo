@@ -46,7 +46,7 @@ const CreateSession = () => {
 			const res = await privateRequest.post("/session", session);
 			console.log(res);
 			if (res.data.success === true) {
-				toast.success("Session updated successfully");
+				toast.success("Session created successfully");
 			} else {
 				toast.error("Failed to update session");
 			}
