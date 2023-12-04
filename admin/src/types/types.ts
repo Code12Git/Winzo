@@ -50,14 +50,21 @@ export type TransactionDetails = {
 };
 
 export type ScreenshotDetails = {
-    id: number,
-    screenshot: string
-}
-
+    id: number;
+    screenshot: string;
+    userId: number;
+    user?: User;
+    createdAt: string;
+};
 export type BalanceDetails = {
     id: number,
     email: string,
     name: string,
     username: string,
     balance: number
+}
+
+export interface Metadata {
+    title: string;
+    description: string;
 }

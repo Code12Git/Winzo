@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { privateRequest } from "@/helpers/axios";
 import { ScreenshotDetails } from "@/types/types";
 import Link from "next/link";
-
+import Image from "next/image";
 const Screenshots = () => {
 	const [screenshots, setScreenshots] = useState<ScreenshotDetails[] | null>(
 		null
@@ -47,10 +47,12 @@ const Screenshots = () => {
 							className="block cursor-pointer mb-2"
 							rel="noopener noreferrer"
 						>
-							<img
+							<Image
 								src={screenshot?.screenshot}
 								alt={`Screenshot ${screenshot.id}`}
 								className="w-full rounded-md"
+								width={600}
+								height={600}
 							/>
 						</a>
 						<div className="flex flex-col">

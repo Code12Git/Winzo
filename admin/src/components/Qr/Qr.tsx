@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { Cancel } from "@mui/icons-material";
 import { formRequest } from "@/helpers/axios";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const Qr: React.FC = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,10 +29,12 @@ const Qr: React.FC = () => {
 		<div className="flex flex-col items-center justify-center h-screen">
 			{file && (
 				<div className="w-64 relative">
-					<img
+					<Image
 						className="h-48 w-full rounded-lg object-cover"
 						src={URL.createObjectURL(file)}
 						alt="Preview"
+						width={600}
+						height={600}
 					/>
 					<Cancel
 						className="absolute top-2 right-2 h-8 w-8 rounded-full bg-gray-100 p-1 cursor-pointer"
