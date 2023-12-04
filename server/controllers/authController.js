@@ -37,6 +37,7 @@ export const RegisterController = async (req, res) => {
 				phone: payload.phone,
 				countryCode: req.body.countryCode,
 				password: hashedPassword,
+				balance: 300,
 			},
 		});
 

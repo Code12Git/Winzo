@@ -1,6 +1,5 @@
 import prisma from "../db/conn.js";
-
-// Create Bet Controller
+import { updateUserBalanceController } from "./transactionController.js";
 
 export const createBetController = async (req, res) => {
 	try {
@@ -22,6 +21,32 @@ export const createBetController = async (req, res) => {
 			});
 		}
 
+		const user = await prisma.user.findUnique({
+			where: {
+				id: loggedInUser.id,
+			},
+			select: {
+				balance: true,
+			},
+		});
+
+		if (!user) {
+			return res
+				.status(404)
+				.json({ success: false, message: "User not found" });
+		}
+
+		if (user.balance < parsedBetAmount) {
+			return res.status(400).json({
+				success: false,
+				message: "Insufficient balance for this action",
+			});
+		}
+
+		// Deduct the bet amount
+		const updatedBalance = user.balance - parsedBetAmount;
+		await updateUserBalanceController(loggedInUser.id, updatedBalance);
+
 		const latestSession = await prisma.session.findFirst({
 			orderBy: { createdAt: "desc" },
 		});
@@ -31,13 +56,20 @@ export const createBetController = async (req, res) => {
 			latestSession.number === number &&
 			latestSession.color === color;
 
-		let payout = 0;
-		let isWinner = false;
+		const isWinner = userWins;
 
-		if (number && color && userWins) {
-			payout = 4 * parsedBetAmount;
-			isWinner = true;
+		let payout = 0;
+
+		if (isWinner) {
+			payout = parsedBetAmount * 4;
 		}
+
+		// Adjust balance if user wins
+		if (isWinner) {
+			const newBalance = updatedBalance + payout; // Add the payout
+			await updateUserBalanceController(loggedInUser.id, newBalance);
+		}
+		console.log(isWinner);
 
 		const bet = await prisma.bet.create({
 			data: {
@@ -49,13 +81,14 @@ export const createBetController = async (req, res) => {
 				isWinner,
 			},
 		});
+		console.log("Bet created:", bet);
 
 		return res.status(200).json({
 			success: true,
-			message: userWins
+			message: isWinner
 				? "Congratulations! You won!"
 				: "You did not win this time.",
-			bet,
+			bet: bet || null,
 		});
 	} catch (err) {
 		return res.status(500).json({ success: false, err: err.message });

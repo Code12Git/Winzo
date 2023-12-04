@@ -28,16 +28,17 @@ const createRandomSession = async () => {
 			},
 		});
 
-		console.log("Random Session Created:", session);
+		// console.log("Random Session Created:", session);
 	} catch (err) {
 		console.error("Error creating random session:", err);
 	}
 };
 
-const getRemainingTime = () => {
+export const getRemainingTime = () => {
 	const currentTime = Date.now();
 	const timeSinceLastExecution = currentTime - lastIntervalExecution;
-	const remainingTime = 60000 - timeSinceLastExecution; // Calculate remaining time until next execution
+	const remainingTime = 60000 - timeSinceLastExecution;
+
 	return remainingTime;
 };
 

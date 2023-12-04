@@ -35,6 +35,11 @@ const Transaction = () => {
 				return;
 			}
 
+			if (transaction.deposit < 300) {
+				toast.error("Deposit amount cannot be less than 300");
+				return;
+			}
+
 			if (file) {
 				const data = new FormData();
 				data.append("screenshot", file);
