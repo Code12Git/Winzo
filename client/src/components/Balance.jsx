@@ -8,18 +8,22 @@ const Balance = () => {
 		null
 );
 useEffect(() => {
-  const fetchBalance = async () => {
-    try {
-      const res = await privateRequest.get('/transaction/balance');
-      if (res.data && res.data.success === true) { 
-        setBalance(res.data.balance);
+    const fetchBalance = async () => {
+      try {
+        const res = await privateRequest.get('/transaction/balance');
+        if (res.data && res.data.success === true) { 
+          setBalance(res.data.balance); 
+        }
+      } catch (err) {
+        toast.error(err.message); 
       }
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
-  fetchBalance();
-}, []);
+    };
+
+    const interval = setInterval(fetchBalance, 10000); 
+    fetchBalance();
+
+    return () => clearInterval(interval);
+  }, []); 
 
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -64,7 +68,7 @@ useEffect(() => {
         <motion.div
           whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.8 }}
-          className="bg-green-500 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+         className="bg-green-500 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
         >
           Telegram
         </motion.div>

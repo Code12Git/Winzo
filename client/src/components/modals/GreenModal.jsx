@@ -63,7 +63,7 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
       betAmount: betAmount,
     });
     toast.success('Bet placed Successfully!');
-    toast.error(response.data.message);
+    toast.success(response.data.message);
   } catch (error) {
     console.error('Submission Error:', error.response);
     toast.error(error.response.data.message);
