@@ -37,7 +37,6 @@ const SidebarContent = () => {
             </motion.div>
             </NavLink>
           ))}
-          <button type="button" onClick={handleLogout} className=" bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl">Logout</button>
 
         </div>
       </div>

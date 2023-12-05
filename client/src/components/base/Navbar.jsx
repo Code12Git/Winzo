@@ -55,7 +55,7 @@ const handleLogout = () => {
           </motion.div>
         </div>
 
-        <motion.div variants={textVariants} initial='initial' animate='animate' className="lg:block hidden lg:flex gap-2 items-center justify-center space-x-5">
+        <motion.div variants={textVariants} initial='initial' animate='animate' className="  lg:flex gap-2 flex-wrap items-center justify-center space-x-2">
           {user ? (
             <div className="flex items-center">
               <p className='bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl'>Logged in as: {user.name}</p>

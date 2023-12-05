@@ -15,7 +15,7 @@ useEffect(() => {
           setBalance(res.data.balance); 
         }
       } catch (err) {
-        toast.error(err.message); 
+      console.error(err)
       }
     };
 
