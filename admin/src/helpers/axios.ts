@@ -6,7 +6,7 @@ interface Token {
     token: string;
 }
 
-let token = localStorage.getItem('token');
+const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
 export const publicRequest: AxiosInstance = axios.create({
     baseURL: BASE_URL,

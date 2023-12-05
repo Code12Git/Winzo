@@ -75,7 +75,7 @@ const Countdown: React.FC<CountdownProps> = ({ fetchSession }) => {
 		<div className="grid grid-flow-col gap-5 text-center auto-cols-max">
 			<div className={`flex flex-col ${isRed ? "text-red-600" : "text-black"}`}>
 				<span className="countdown font-mono text-5xl">
-					<span style={{ "--value": countdown.minutes }}>
+					<span style={{ "--value": countdown.minutes } as React.CSSProperties}>
 						{String(countdown.minutes).padStart(2, "0")}
 					</span>
 				</span>
@@ -83,7 +83,7 @@ const Countdown: React.FC<CountdownProps> = ({ fetchSession }) => {
 			</div>
 			<div className={`flex flex-col ${isRed ? "text-red-600" : "text-black"}`}>
 				<span className="countdown font-mono text-5xl">
-					<span style={{ "--value": countdown.seconds }}>
+					<span style={{ "--value": countdown.seconds } as React.CSSProperties}>
 						{String(countdown.seconds).padStart(2, "0")}
 					</span>
 				</span>

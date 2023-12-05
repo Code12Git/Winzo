@@ -11,9 +11,11 @@ const Balance = () => {
 	}, []);
 	const fetchBalance = async () => {
 		try {
-			const res = await privateRequest.get("/transaction/all");
-			console.log(res.data);
-			setUsers(res.data.users);
+			if (typeof window !== "undefined") {
+				const res = await privateRequest.get("/transaction/all");
+				console.log(res.data);
+				setUsers(res.data.users);
+			}
 		} catch (error) {
 			console.error("Error fetching balance:", error);
 		}

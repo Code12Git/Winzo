@@ -57,8 +57,8 @@ export default function UpdateSession({ id, fetchData }: Props) {
 	};
 
 	const SubmitHandler = async (
-		e: MouseEvent<HTMLButtonElement, MouseEvent>
-	) => {
+		e: React.MouseEvent<HTMLButtonElement>
+	): Promise<void> => {
 		e.preventDefault();
 		try {
 			const res = await privateRequest.put(`/session/${id}`, session);

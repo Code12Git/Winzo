@@ -47,6 +47,7 @@ export type TransactionDetails = {
         name: string;
         username: string;
     };
+    createdAt: string
 };
 
 export type ScreenshotDetails = {

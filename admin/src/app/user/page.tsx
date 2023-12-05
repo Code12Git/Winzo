@@ -1,4 +1,3 @@
-import React from "react";
 import UserCards from "@/components/User/UserCards";
 import RouteGuard from "@/components/RouteGuard";
 

@@ -41,15 +41,19 @@ function Login() {
 			const response = await publicRequest.post("/auth/login", credentials);
 			const admin = response.data.user.Role;
 
-			localStorage.setItem("user", JSON.stringify(response.data));
-			localStorage.setItem("token", JSON.stringify(response.data.token));
+			if (typeof window !== "undefined") {
+				localStorage.setItem("user", JSON.stringify(response.data));
+				localStorage.setItem("token", JSON.stringify(response.data.token));
+			}
 
 			const userName = response.data.user.name;
 
 			if (admin === "SuperAdmin") {
 				toast.success(`Welcome Back, ${userName}!`);
 				router.push("/");
-				window.location.reload();
+				if (typeof window !== "undefined") {
+					window.location.reload();
+				}
 			} else {
 				router.push("/login");
 				toast.error("You are not allowed to access this page");

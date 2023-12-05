@@ -55,6 +55,41 @@ export const deleteUser = async (req, res) => {
 	try {
 		const userId = req.params.id;
 
+		await prisma.bet.deleteMany({
+			where: {
+				userId: Number(userId),
+			},
+		});
+		const screenshots = await prisma.screenshot.findMany({
+			where: {
+				userId: Number(userId),
+			},
+		});
+
+		// If there are related records, delete or update them
+		if (screenshots.length > 0) {
+			// For example, you can delete the related screenshots
+			await prisma.screenshot.deleteMany({
+				where: {
+					userId: Number(userId),
+				},
+			});
+		}
+		const transactions = await prisma.transaction.findMany({
+			where: {
+				userId: Number(userId),
+			},
+		});
+
+		// If there are related records, delete or update them
+		if (transactions.length > 0) {
+			// For example, you can delete the related transactions
+			await prisma.transaction.deleteMany({
+				where: {
+					userId: Number(userId),
+				},
+			});
+		}
 		const user = await prisma.user.delete({
 			where: {
 				id: Number(userId),

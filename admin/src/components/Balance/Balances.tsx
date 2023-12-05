@@ -1,4 +1,3 @@
-"use client";
 import Balance from "./Balance";
 const Balances = () => {
 	return (

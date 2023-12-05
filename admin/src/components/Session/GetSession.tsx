@@ -46,10 +46,7 @@ const GetSession = () => {
 
 	return (
 		<>
-			<Countdown
-				className="flex items-center m-auto mt-12"
-				fetchSession={fetchAllSession}
-			/>
+			<Countdown fetchSession={fetchAllSession} />
 			<CreateSession />
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-12">
 				{sessions.map((session) => (
@@ -67,10 +64,19 @@ const GetSession = () => {
 							<p>Number: {session.number}</p>
 							<div className="flex justify-between mt-4">
 								<button>
-									<UpdateSession fetchData={fetchAllSession} id={session.id} />
+									{session.id !== undefined && (
+										<button>
+											<UpdateSession
+												fetchData={fetchAllSession}
+												id={session.id}
+											/>
+										</button>
+									)}{" "}
 								</button>
 								<button
-									onClick={() => deleteHandler(session.id)}
+									onClick={() =>
+										session.id !== undefined && deleteHandler(session.id)
+									}
 									className="flex items-center bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded-md"
 								>
 									Delete
