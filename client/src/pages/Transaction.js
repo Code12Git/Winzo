@@ -61,7 +61,7 @@ const Transaction = () => {
 	};
 
 	return (
-		<div class="flex justify-around">
+		<div class="flex flex-wrap justify-around">
 			<div class="text-center">
 				<h1 class="text-3xl font-bold mb-4">Paytm -: QR Code</h1>
 				<img

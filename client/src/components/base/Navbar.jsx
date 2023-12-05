@@ -57,8 +57,8 @@ const handleLogout = () => {
 
         <motion.div variants={textVariants} initial='initial' animate='animate' className="  lg:flex gap-2 flex-wrap items-center justify-center space-x-2">
           {user ? (
-            <div className="flex items-center">
-              <p className='bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl'>Logged in as: {user.name}</p>
+            <div className="flex flex-wrap items-center">
+              <p className='bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl'>{user.name}</p>
               <button type="button" onClick={handleLogout} className="ml-2 bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl">Logout</button>
             </div>
           ) : (
