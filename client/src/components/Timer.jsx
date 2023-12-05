@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Countdown from './common/Countdown';
-import { publicRequest } from './helpers/axios';
+import { publicRequest } from '../helpers/axios';
 import Details from './Details';
 const Timer = () => {
   const [latestSession, setLatestSession] = useState(''); 

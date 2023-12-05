@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { publicRequest } from '../helpers/axios';
+import { publicRequest } from '../../helpers/axios';
 
 const Countdown = ({fetchLatestSession,fetchSession}) => {
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });

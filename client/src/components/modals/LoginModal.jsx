@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
-import { publicRequest } from '../helpers/axios';
+import { publicRequest } from '../../helpers/axios'
 import toast from 'react-hot-toast'
 export default function LoginModal() {
   let [isOpen, setIsOpen] = useState(true)
