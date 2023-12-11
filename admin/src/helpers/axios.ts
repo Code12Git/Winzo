@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-const BASE_URL = "https://winzo.onrender.com/api";
+const BASE_URL = "http://localhost:7000/api";
 
 interface Token {
     token: string;

@@ -41,31 +41,36 @@ const handleLogout = () => {
   window.location.reload();
 };
 
-
 	 return (
     <div className="relative w-full">
-      <div className="mx-auto navbar bg-gradient-to-r from-gray-900 to-slate-900 flex max-w-8xl items-center justify-between px-4 py-2 sm:px-6 lg:px-6">
-        <div className="inline-flex p-4 items-center space-x-6">
+      <div className="mx-auto navbar   flex max-w-8xl items-center justify-between px-4 py-2 sm:px-6 lg:px-6">
+       <div className="inline-flex p-4 items-center space-x-6">
           <motion.div variants={textVariants} initial='initial' animate='animate' className="flex items-center gap-2">
-            <SideDrawer />
-            <h1 className="text-lg lg:text-4xl font-roboto font-bold">
-              <span className="text-gradient bg-gradient-to-r from-sky-700 to-cyan-800 bg-clip-text text-transparent">Bet</span>
-              <span className="text-gradient lg:text-2xl  bg-gradient-to-r from-violet-900 via-red-500 to-pink-400 bg-clip-text text-transparent">Master</span>
-            </h1>
+           <SideDrawer  />
+           <div className="flex flex-row gap-1 items-center">
+                        <img src='/logo.png' className="w-10" alt='colorBat' />
+
+          <h1 className="text-lg lg:text-4xl font-bold font-serif">
+  <span className="text-gradient bg-gradient-to-r from-sky-700 to-cyan-800 bg-clip-text text-transparent">Color</span>
+  <span className="text-gradient lg:text-2xl  bg-gradient-to-r from-violet-900 via-red-500 to-pink-400 bg-clip-text text-transparent">Bat</span>
+</h1>
+
+</div>
+
           </motion.div>
         </div>
 
-        <motion.div variants={textVariants} initial='initial' animate='animate' className="  lg:flex gap-2 flex-wrap items-center justify-center space-x-2">
+       <motion.div variants={textVariants} initial='initial' animate='animate' className="  lg:flex gap-2 flex-wrap items-center justify-center space-x-2">
           {user ? (
             <div className="flex flex-wrap items-center">
-              <p className='bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl'>{user.name}</p>
-              <button type="button" onClick={handleLogout} className="ml-2 bg-gradient-to-r from-red-400 via-green-400 to-purple-400 bg-clip-text text-transparent font-bold text-xl">Logout</button>
+<p className='text-2xl font-bold bg-gradient-to-r text-transparent bg-clip-text from-red-700 to-green-700'>{user.name}</p>
+              <button type="button" onClick={handleLogout} className="ml-2 bg-gradient-to-r text-2xl font-bold text-transparent bg-clip-text from-red-700 to-green-700 ">Logout</button>
             </div>
           ) : (
             <>
               <button type="button"><LoginModal /></button>
               <button type="button"><RegisterModal /></button>
-            </>
+           </>
           )}
         </motion.div>
       </div>

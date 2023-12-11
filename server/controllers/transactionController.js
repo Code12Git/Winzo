@@ -40,9 +40,9 @@ export const createTransaction = async (req, res) => {
 			},
 			select: {
 				id: true,
-				email: true,
+
 				name: true,
-				username: true,
+				phone: true,
 			},
 		});
 
@@ -76,9 +76,9 @@ export const getAllTransactions = async (req, res) => {
 				user: {
 					select: {
 						id: true,
-						email: true,
+
 						name: true,
-						username: true,
+						phone: true,
 					},
 				},
 			},
@@ -215,9 +215,9 @@ export const getAllUserBalances = async (req, res) => {
 		const usersWithBalances = await prisma.user.findMany({
 			select: {
 				id: true,
-				email: true,
+
 				name: true,
-				username: true,
+				phone: true,
 				balance: true,
 			},
 		});
@@ -305,7 +305,7 @@ export const handleWinningBet = async (userId, betPay) => {
 		}
 
 		const currentBalance = user.balance;
-		const updatedBalance = currentBalance + betPay; // Calculate updated balance based on bet payout
+		const updatedBalance = currentBalance + betPay;
 
 		await updateUserBalanceController(userId, updatedBalance);
 

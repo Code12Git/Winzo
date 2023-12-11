@@ -43,13 +43,14 @@ const GetSession = () => {
 			toast.error(err.message);
 		}
 	};
+	const lastThreeSessions = sessions.slice(-3).reverse();
 
 	return (
 		<>
 			<Countdown fetchSession={fetchAllSession} />
 			<CreateSession />
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-12">
-				{sessions.map((session) => (
+				{lastThreeSessions.slice(0, 3).map((session) => (
 					<div key={session.id} className="bg-white rounded-lg p-4 shadow-md">
 						<div className="flex flex-col">
 							<div className="flex items-center mb-2">

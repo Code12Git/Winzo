@@ -6,11 +6,9 @@ export default function MyModal() {
   let [isOpen, setIsOpen] = useState(false)
     const [showModal, setShowModal] = useState(false);
   const [credentials,setCredentials]=useState({
-    username:'',
     name:'',
-    email:'',
     phone:'',
-countryCode: "1",
+    countryCode: "1",
     password: '',  
     password_confirmation:'',
   })
@@ -81,21 +79,7 @@ const inputerror = err.response.data.errors;
 
           <h2 className="text-2xl font-bold mb-4 text-center">Registration Form</h2>
           <form onSubmit={submitHandler} className="flex flex-col gap-4">
-             <div className="mb-4">
-              <label htmlFor="name" className="font-bold text-gray-700 text-lg">
-                Username
-              </label>
-              <input
-                onChange={inputChangeHandler}
-                type="text"
-                id="name"
-                name="username"
-                value={credentials.username}
-                className="w-full p-2 border rounded-lg"
-                placeholder="Enter your Username"
-              />
-              {errors?.username&&<p className='text-red-500'>{errors.username}</p>}
-            </div>
+             
             <div className="mb-4">
               <label htmlFor="name" className="font-bold text-gray-700 text-lg">
                 Name
@@ -112,22 +96,7 @@ const inputerror = err.response.data.errors;
                             {errors?.name&&<p className='text-red-500'>{errors.name}</p>}
 
             </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="font-bold text-gray-700 text-lg">
-                Email
-              </label>
-              <input
-              onChange={inputChangeHandler}
-                type="email"
-                id="email"
-                value={credentials.email}
-                name="email"
-                className="w-full p-2 border rounded-lg"
-               placeholder="Enter your email"
-              />
-                                          {errors?.email&&<p className='text-red-500'>{errors.email}</p>}
-
-            </div>
+           
             <div className="mb-4 flex items-center">
               <label htmlFor="phoneNumber" className="font-bold text-gray-700 text-lg mr-2">
                 Phone Number

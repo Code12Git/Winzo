@@ -10,7 +10,7 @@ import { AuthError, Login } from "@/types/types";
 function Login() {
 	const router = useRouter();
 	const [credentials, setCredentials] = useState<Login>({
-		email: "",
+		phone: "",
 		password: "",
 	});
 	const [errors, setErrors] = useState<AuthError>({});
@@ -20,10 +20,15 @@ function Login() {
 		const tokenString = localStorage.getItem("token");
 
 		if (userString && tokenString) {
-			const user = JSON.parse(userString);
-			const token = JSON.parse(tokenString);
-			if (user.user.Role === "SuperAdmin" && token) {
-				router.push("/");
+			try {
+				const user = JSON.parse(userString);
+				const token = JSON.parse(tokenString);
+
+				if (user && user.user && user.user.Role === "SuperAdmin" && token) {
+					router.push("/");
+				}
+			} catch (error) {
+				console.error("Error parsing JSON:", error);
 			}
 		}
 	}, [router]);
@@ -185,21 +190,18 @@ function Login() {
 										className="text-base font-medium text-gray-900"
 									>
 										{" "}
-										Email address{" "}
+										Phone{" "}
 									</label>
 									<div className="mt-2">
 										<input
 											className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-											type="email"
-											name="email"
-											value={credentials.email}
+											type="number"
+											name="phone"
+											value={credentials.phone}
 											onChange={changeHandler}
-											placeholder="Email"
+											placeholder="Phone"
 										></input>
 									</div>
-									{errors?.email && (
-										<p className="text-red-700">{errors.email}</p>
-									)}
 								</div>
 								<div>
 									<div className="flex items-center justify-between">

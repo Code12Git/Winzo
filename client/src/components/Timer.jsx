@@ -30,11 +30,11 @@ const Timer = () => {
   
   return (
     <>
-    <div className='p-8 flex flex-col items-center justify-between md:flex-row'>
+    <div className='p-16 flex flex-col items-center justify-between md:flex-row'>
       {/* Display Session Information */}
      <div className='mb-8 md:mr-4 text-center'>
         <h1 className='text-4xl font-bold mb-2 text-blue-800'>
-          <i className='fas fa-cube mr-2 text-blue-500'>Session</i>
+         <i className='fas fa-cube mr-2 text-blue-500'>Session</i>
         </h1>
         <p className='text-2xl animate-beat text-blue-600'>{latestSession}</p>
       </div>
@@ -42,8 +42,8 @@ const Timer = () => {
       {/* Display Countdown */}
       <div className='text-center'>
         <h1 className='text-4xl font-bold mb-2 text-yellow-800'>Count Down</h1>
-        {/* Pass the function to update session as a prop */}
-        <Countdown fetchLatestSession={fetchSession} fetchSession={fetchAllSession}  />
+       {/* Pass the function to update session as a prop */}
+       <Countdown fetchLatestSession={fetchSession} fetchSession={fetchAllSession}  />
       </div>
     </div>
       <Details fetchSession={fetchAllSession} session={session} />

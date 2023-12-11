@@ -8,11 +8,7 @@ import {NavLink} from 'react-router-dom'
 const SidebarContent = () => {
 
  
-  const handleLogout = () => {
-  localStorage.removeItem('user'); 
-  localStorage.removeItem('token');
-  window.location.reload();
-};
+ 
 
   return (
     <div className="bg-gradient-to-b border-r border-gray-400  md:block from-slate-900 via-gray-900 to-zinc-900 opacity-90 h-screen w-72">
@@ -65,7 +61,7 @@ export default function SideDrawer() {
       {(["left"].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button onClick={toggleDrawer(anchor, true)}>
-            <MenuIcon className="text-white" />
+            <MenuIcon className="text-black" />
           </Button>
           <Drawer
             anchor={anchor}

@@ -2,21 +2,21 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { privateRequest } from '../../helpers/axios';
 import toast from 'react-hot-toast'
+import BetResultModal from './BetResultModel';
 export default function GreenModal() {
   let [isOpen, setIsOpen] = useState(false)
- const [selectedNumber, setSelectedNumber] = useState(7);
   const [betAmount, setBetAmount] = useState(100);
   const [selectedColor, setSelectedColor] = useState('green');
-const [isBetPlaced, setIsBetPlaced] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
+  const [result, setResult] = useState('');
+  const[payout,setPayout]=useState(0)
   
 
   const calculatePotentialWin = () => {
     let potentialWin = betAmount * 2; 
 
     if (selectedColor === 'green') {
-     if (selectedNumber === 7 || selectedNumber === 9 || selectedNumber === 8) {
-        potentialWin = betAmount * 4; 
-      }
+     
     }
     return potentialWin;
   };
@@ -25,9 +25,7 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
     setSelectedColor(color);
   };
 
-  const handleNumberSelection = (number) => {
-    setSelectedNumber(number);
-  };
+ 
 
   const handleBetAmountSelection = (amount) => {
     setBetAmount(amount);
@@ -59,18 +57,16 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
    try {
     const response = await privateRequest.post('/bet', {
       color: selectedColor,
-      number: selectedNumber,
       betAmount: betAmount,
     });
-    toast.success('Bet placed Successfully!');
-    toast.success(response.data.message);
+     setResult(response.data.message)
+      setPayout(response.data.bet.payout)
+   setIsOpen(false)
+     
+    toast.success('Bet placed Successfully!')
   } catch (error) {
     console.error('Submission Error:', error.response);
     toast.error(error.response.data.message);
-  } finally {
-    setTimeout(() => {
-      setIsBetPlaced(false); 
-    }, 60000); 
   }
 };
 
@@ -81,11 +77,12 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
         <button
           type="button"
           onClick={openModal}
-          className="rounded-md bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
-        >
+          className="rounded-md w-36 bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+       >
           Green
         </button>
       </div>
+
 
       <Transition appear show={isOpen} as={Fragment}>
        {user?( <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -117,45 +114,26 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Select Color
+                    Select Amount
                   </Dialog.Title>
-                  <div className="mt-6 flex flex-col gap-8">
+                    
+                    
                     
                     <div className='flex flex-col justify-between mt-4 gap-4'>
-                      <h1 className="text-sm text-gray-500">
-                      Number you want to select?
-                    </h1>
-                    <div className='flex justify-between'>
-                      <button
-        className={`${
-          selectedNumber === 7 ? 'bg-green-700' : 'bg-green-400'
-        } hover:bg-green-700 px-4 p-2 rounded hover:scale-105 transition-transform ease-in-out delay-400 duration-400`}
-        onClick={() => handleNumberSelection(7)}
-      >
-        7
-      </button>
-      <button
-        className={`${
-          selectedNumber === 8 ? 'bg-green-700' : 'bg-green-400'
-        } hover:bg-green-700 px-4 p-2 rounded hover:scale-105 transition-transform ease-in-out delay-400 duration-400`}
-        onClick={() => handleNumberSelection(8)}
-      >
-        8
-      </button>
-      <button
-        className={`${
-          selectedNumber === 9 ? 'bg-green-700' : 'bg-green-400'
-        } hover:bg-green-700 px-4 p-2 rounded hover:scale-105 transition-transform ease-in-out delay-400 duration-400`}
-        onClick={() => handleNumberSelection(9)}
-      >
-        9
-      </button>
-                      </div>
-                    </div>
-                    <div className='flex flex-col justify-between mt-4 gap-4'>
-                      <h1 className="text-sm text-gray-500">
-                      Money you want to bet?
-                    </h1>
+                      
+                    <div className='flex flex-col gap-4 mt-4'>
+  <label htmlFor='betAmount' className='text-sm text-gray-500'>
+    Enter the amount you want to bet:
+  </label>
+  <input
+    id='betAmount'
+    type='number'
+    className='border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500'
+    value={betAmount}
+    onChange={(e) => setBetAmount(Number(e.target.value))}
+  />
+</div>
+
                      <div className="flex justify-between">
         <button
           className={`${
@@ -192,7 +170,7 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
                    
 
               
-                  </div>
+                
 
                   <div className="mt-4 flex justify-between items-center">
          <h1>Potential Win: {calculatePotentialWin()}</h1>

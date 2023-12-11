@@ -1,6 +1,8 @@
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
-import SportsSoccerOutlinedIcon from "@mui/icons-material/SportsSoccerOutlined";
+const user = JSON.parse(localStorage.getItem("user"));
 
 export const SidebarLinks = [
 	{
@@ -8,10 +10,18 @@ export const SidebarLinks = [
 		title: "Home",
 		link: "/",
 	},
-
-	{
-		icon: <SportsSoccerOutlinedIcon />,
-		title: "Sport",
-		showDropdown: true,
-	},
+	...(user
+		? [
+				{
+					icon: <CreditCardIcon />,
+					title: "Withdrawal Money",
+					link: "/withdrawal",
+				},
+				{
+					icon: <AttachMoneyIcon />,
+					title: "Add Money",
+					link: "/transaction",
+				},
+		  ]
+		: []),
 ];

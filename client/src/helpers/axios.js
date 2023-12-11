@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://winzo.onrender.com/api";
+const BASE_URL = "http://localhost:7000/api";
 
 let token = localStorage.getItem("token");
 

@@ -6,7 +6,7 @@ import prisma from "../db/conn.js"; // Import Prisma instance
 export const createBetController = async (req, res) => {
 	try {
 		const loggedInUser = req.user;
-		const { number, color, betAmount } = req.body;
+		const { color, betAmount } = req.body;
 
 		if (!loggedInUser) {
 			return res
@@ -22,15 +22,21 @@ export const createBetController = async (req, res) => {
 				message: "Invalid bet amount, please provide a valid number",
 			});
 		}
+		if (parsedBetAmount < 10) {
+			return res.status(400).json({
+				success: false,
+				message: "Minimum bet amount is 10",
+			});
+		}
 
-		const timeThreshold = 22 * 1000;
+		const timeThreshold = 32 * 1000;
 		const remainingTime = getRemainingTime();
 
 		if (remainingTime <= timeThreshold) {
 			return res.status(400).json({
 				success: false,
 				message:
-					"Bet can only be placed when the remaining time is above 20 seconds.",
+					"Bet can only be placed when the remaining time is above 30 seconds.",
 			});
 		}
 
@@ -39,7 +45,7 @@ export const createBetController = async (req, res) => {
 		});
 
 		if (latestSession) {
-			const sessionIdentifier = `${latestSession.color}_${latestSession.number}`;
+			const sessionIdentifier = `${latestSession.color}`;
 			if (sessionUserBets.has(sessionIdentifier)) {
 				const userBets = sessionUserBets.get(sessionIdentifier);
 
@@ -77,22 +83,22 @@ export const createBetController = async (req, res) => {
 		await updateUserBalanceController(loggedInUser.id, updatedBalance);
 
 		// Calculate win
-		const userWins =
-			latestSession &&
-			latestSession.number === number &&
-			latestSession.color === color;
+		const userWins = latestSession && latestSession.color === color;
 		const isWinner = userWins;
 		let payout = 0;
+		const blueMultiplier = 4.5;
+		const otherColorMultiplier = 2;
 
 		if (isWinner) {
-			payout = parsedBetAmount * 4;
-			const newBalance = updatedBalance + payout; // Add the payout
+			payout =
+				parsedBetAmount *
+				(color === "blue" ? blueMultiplier : otherColorMultiplier);
+			const newBalance = updatedBalance + payout;
 			await updateUserBalanceController(loggedInUser.id, newBalance);
 		}
 
 		const bet = await prisma.bet.create({
 			data: {
-				number,
 				color,
 				betAmount: parsedBetAmount,
 				payout,
@@ -110,5 +116,47 @@ export const createBetController = async (req, res) => {
 		});
 	} catch (err) {
 		return res.status(500).json({ success: false, err: err.message });
+	}
+};
+
+export const getBetController = async (req, res) => {
+	try {
+		const loggedInUser = req.user;
+
+		if (!loggedInUser) {
+			return res
+				.status(401)
+				.json({ success: false, message: "User not logged in" });
+		}
+
+		const latestBet = await prisma.bet.findFirst({
+			where: {
+				userId: loggedInUser.id,
+			},
+			orderBy: {
+				createdAt: "desc",
+			},
+			select: {
+				color: true,
+				betAmount: true,
+				payout: true,
+				isWinner: true,
+				createdAt: true,
+			},
+		});
+
+		if (!latestBet) {
+			return res.status(404).json({
+				success: false,
+				message: "No bet found for the user",
+			});
+		}
+
+		return res.status(200).json({
+			success: true,
+			latestBet,
+		});
+	} catch (error) {
+		return res.status(500).json({ success: false, error: error.message });
 	}
 };

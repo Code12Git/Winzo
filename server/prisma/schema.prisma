@@ -11,10 +11,8 @@ datasource db {
 
 model User {
   id               Int           @id @default(autoincrement())
-  email            String        @unique
-  username         String
   name             String?
-  phone            String?
+  phone            String        @unique
   countryCode      String?
   Role             Role          @default(User)
   password         String
@@ -24,6 +22,8 @@ model User {
   Screenshot       Screenshot[]
   Transaction      Transaction[]
   balance          Int?
+  amount           Int?
+  BankAccount      BankAccount[]
 }
 
 model Transaction {
@@ -47,7 +47,6 @@ model Bet {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  number    Int
   color     String
   betAmount Int
   payout    Int?
@@ -57,7 +56,6 @@ model Bet {
 
 model Session {
   id        Int       @id @default(autoincrement())
-  number    Int
   color     String
   createdAt DateTime  @default(now())
   startTime DateTime?
@@ -75,4 +73,22 @@ model Screenshot {
   user       User     @relation(fields: [userId], references: [id])
   userId     Int
   createdAt  DateTime @default(now())
+}
+
+model Withdrawal {
+  id               Int         @id @default(autoincrement())
+  amountToWithdraw Int
+  phoneNumber      String
+  bankAccount      BankAccount @relation(fields: [bankAccountId], references: [id])
+  bankAccountId    Int
+}
+
+model BankAccount {
+  id                Int          @id @default(autoincrement())
+  accountNumber     String
+  IFSCCode          String
+  accountMemberName String
+  withdrawals       Withdrawal[]
+  user              User         @relation(fields: [userId], references: [id])
+  userId            Int
 }

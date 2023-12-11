@@ -9,6 +9,7 @@ import betRoute from "./routes/bet.js";
 import qrRoute from "./routes/qr.js";
 import transactionRoute from "./routes/transaction.js";
 import screenshotRoute from "./routes/screenshot.js";
+import withdrawRoute from "./routes/withdraw.js";
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
 
@@ -29,7 +30,7 @@ app.use("/api/bet", betRoute);
 app.use("/api/qr", qrRoute);
 app.use("/api/transaction", transactionRoute);
 app.use("/api/screenshot", screenshotRoute);
-
+app.use("/api/withdraw", withdrawRoute);
 // Testing route to check if the server is working
 app.get("/", (req, res) => {
 	res.status(200).json("Working!");

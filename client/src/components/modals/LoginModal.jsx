@@ -2,13 +2,12 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { publicRequest } from '../../helpers/axios'
 import toast from 'react-hot-toast'
+import { NavLink } from 'react-router-dom'
 export default function LoginModal() {
   let [isOpen, setIsOpen] = useState(true)
     const [showModal, setShowModal] = useState(false);
-  const [credentials,setCredentials]=useState({
-  
-    email:'',
- 
+  const [credentials,setCredentials]=useState({ 
+    phone:'',
     password: '',  
   
   })
@@ -86,16 +85,16 @@ const inputChangeHandler = (e) => {
            
             <div className="mb-4">
               <label htmlFor="email" className="font-bold text-gray-700 text-lg">
-                Email
+                Phone number
               </label>
               <input
               onChange={inputChangeHandler}
-                type="email"
+                type="number"
                 id="email"
-                value={credentials.email}
-                name="email"
+                value={credentials.phone}
+                name="phone"
                 className="w-full p-2 border rounded-lg"
-               placeholder="Enter your email"
+               placeholder="Enter your phone"
               />
                                           {errors?.email&&<p className='text-red-500'>{errors.email}</p>}
 
@@ -117,13 +116,22 @@ const inputChangeHandler = (e) => {
                                                         {errors?.password&&<p className='text-red-500'>{errors.password}</p>}
 
             </div>
-           
+<div>
+          {/* Other modal content */}
+          <NavLink
+            to="/reset-password"
+            className="text-blue-500 hover:text-blue-700 font-semibold"
+            onClick={closeModal}
+          >
+            Forgot Password
+          </NavLink>
+        </div>          
             <button
               type="submit"
             
               className="bg-orange-500 text-white p-3 rounded-lg w-full hover:bg-orange-600"
             >
-             Login
+            Login
             </button>
           </form>
 

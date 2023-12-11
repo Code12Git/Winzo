@@ -18,12 +18,12 @@ export const RegisterController = async (req, res) => {
 
 		const existingUser = await prisma.user.findUnique({
 			where: {
-				email: payload.email,
+				phone: payload.phone,
 			},
 		});
 
 		if (existingUser) {
-			return res.status(409).json({ message: "Email already exists" });
+			return res.status(409).json({ message: "Phone number already exists" });
 		}
 
 		const saltRounds = 10;
@@ -32,8 +32,6 @@ export const RegisterController = async (req, res) => {
 		const user = await prisma.user.create({
 			data: {
 				name: payload.name,
-				username: payload.username,
-				email: payload.email,
 				phone: payload.phone,
 				countryCode: req.body.countryCode,
 				password: hashedPassword,
@@ -64,40 +62,45 @@ export const loginController = async (req, res) => {
 		vine.errorReporter = () => new CustomErrorReporter();
 		const validator = vine.compile(loginSchema);
 		const payload = await validator.validate(req.body);
-		const isEmailExist = await prisma.user.findUnique({
+
+		const isPhoneExist = await prisma.user.findUnique({
 			where: {
-				email: payload.email,
+				phone: payload.phone,
 			},
 		});
-		if (!isEmailExist) {
+
+		if (!isPhoneExist) {
 			return res.status(400).json({
 				success: false,
-				message: "Email does not exist",
+				message: "Phone number does not exist",
 			});
 		}
+
 		const isPasswordValid = bcrypt.compareSync(
 			payload.password,
-			isEmailExist.password
+			isPhoneExist.password
 		);
+
 		if (!isPasswordValid) {
 			return res.status(400).json({
 				message: "Invalid Credentials",
-
 				success: false,
 			});
 		}
+
 		const token = jwt.sign(
 			{
-				id: isEmailExist.id,
-				Admin: isEmailExist.Admin,
-				SuperAdmin: isEmailExist.SuperAdmin,
+				id: isPhoneExist.id,
+				Admin: isPhoneExist.Admin,
+				SuperAdmin: isPhoneExist.SuperAdmin,
 			},
 			process.env.SECRET_KEY,
 			{ expiresIn: "1d" }
 		);
+
 		return res.status(200).json({
 			message: "User logged in successfully",
-			user: isEmailExist,
+			user: isPhoneExist,
 			token,
 			success: true,
 		});
@@ -110,5 +113,43 @@ export const loginController = async (req, res) => {
 				.status(500)
 				.json({ success: false, message: "Internal Server Error" });
 		}
+	}
+};
+
+// Change Password
+export const updatePasswordByPhoneNumber = async (req, res) => {
+	try {
+		const { phoneNumber, newPassword } = req.body;
+
+		const user = await prisma.user.findUnique({
+			where: {
+				phone: phoneNumber,
+			},
+		});
+
+		if (!user) {
+			return res
+				.status(404)
+				.json({ message: "User with this phone number does not exist" });
+		}
+
+		const saltRounds = 10;
+		const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+		await prisma.user.update({
+			where: {
+				id: user.id,
+			},
+			data: {
+				password: hashedPassword,
+			},
+		});
+
+		return res
+			.status(200)
+			.json({ message: "Password updated successfully for the user" });
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };

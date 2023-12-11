@@ -37,9 +37,8 @@ export const createScreenshot = async (req, res) => {
 			},
 			select: {
 				id: true,
-				email: true,
 				name: true,
-				username: true,
+				phone: true,
 			},
 		});
 
@@ -72,9 +71,9 @@ export const getAllScreenshot = async (req, res) => {
 				user: {
 					select: {
 						id: true,
-						email: true,
+
 						name: true,
-						username: true,
+						phone: true,
 					},
 				},
 			},

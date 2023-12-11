@@ -1,37 +1,31 @@
 import prisma from "../db/conn.js";
-import cron from "node-cron";
 // Creating a session
 
 const specificSessions = [
-	{ color: "red", number: 1 },
-	{ color: "red", number: 3 },
-	{ color: "red", number: 5 },
-	{ color: "blue", number: 2 },
-	{ color: "blue", number: 4 },
-	{ color: "blue", number: 6 },
-	{ color: "green", number: 7 },
-	{ color: "green", number: 9 },
-	{ color: "green", number: 8 },
+	{ color: "red" },
+	{ color: "blue" },
+	{ color: "green" },
 ];
-export const sessionUserBets = new Map(); // Initialize session and user bet tracking
+
+export const sessionUserBets = new Map();
 
 let adminCreatedSession = false;
 let lastIntervalExecution = Date.now();
 const createRandomSession = async () => {
 	const randomIndex = Math.floor(Math.random() * specificSessions.length);
-	const { color, number } = specificSessions[randomIndex];
-	const sessionIdentifier = `${color}_${number}`;
+	const { color } = specificSessions[randomIndex];
+	const sessionIdentifier = `${color}`;
 	sessionUserBets.set(sessionIdentifier, new Set());
 	try {
 		const currentTime = new Date();
 		const session = await prisma.session.create({
 			data: {
 				color,
-				number,
 				createdAt: currentTime,
-				startTime: new Date(currentTime.getTime() + 60000),
+				startTime: new Date(currentTime.getTime() + 180000),
 			},
 		});
+		console.log(session);
 	} catch (err) {
 		console.error("Error creating random session:", err);
 	}
@@ -40,14 +34,13 @@ const createRandomSession = async () => {
 export const getRemainingTime = () => {
 	const currentTime = Date.now();
 	const timeSinceLastExecution = currentTime - lastIntervalExecution;
-	const remainingTime = 60000 - timeSinceLastExecution;
+	const remainingTime = 180000 - timeSinceLastExecution;
 	return remainingTime;
 };
 
 const formatCountdown = (milliseconds) => {
 	const seconds = Math.floor((milliseconds / 1000) % 60);
 	const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-
 	return `${minutes} minutes ${seconds} seconds`;
 };
 
@@ -58,7 +51,6 @@ export const remainingTime = (req, res) => {
 };
 
 const checkAndCreateRandomSession = () => {
-	// Update last execution time
 	const currentTime = Date.now();
 	lastIntervalExecution = currentTime;
 	if (!adminCreatedSession) {
@@ -70,24 +62,23 @@ const checkAndCreateRandomSession = () => {
 	}
 	adminCreatedSession = false;
 };
-checkAndCreateRandomSession();
 
-setInterval(checkAndCreateRandomSession, 60000);
+checkAndCreateRandomSession();
+setInterval(checkAndCreateRandomSession, 180000);
 
 export const createSession = async (req, res) => {
-	const { color, number } = req.body;
+	const { color } = req.body;
 	try {
-		if (!color || !number) {
+		if (!color) {
 			return res.status(400).json({
 				success: false,
-				message: "Please provide both color and number for the session.",
+				message: "Please provide color for the session.",
 			});
 		}
 
 		const session = await prisma.session.create({
 			data: {
 				color,
-				number,
 			},
 		});
 
@@ -97,7 +88,7 @@ export const createSession = async (req, res) => {
 			session,
 		});
 
-		adminCreatedSession = true; // Set adminCreatedSession flag when session is created
+		adminCreatedSession = true;
 	} catch (err) {
 		res.status(500).json({ error: err.message, success: false });
 	}
@@ -106,17 +97,13 @@ export const createSession = async (req, res) => {
 // Updating a session
 export const updateSession = async (req, res) => {
 	const { id } = req.params;
-	const { color, number } = req.body;
+	const { color } = req.body;
 
 	try {
 		const sessionDataToUpdate = {};
 
 		if (color !== undefined) {
 			sessionDataToUpdate.color = color;
-		}
-
-		if (number !== undefined) {
-			sessionDataToUpdate.number = number;
 		}
 
 		const updatedSession = await prisma.session.update({

@@ -1,33 +1,92 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
-import { privateRequest } from '../../helpers/axios';
+import { Fragment, useState,useEffect } from 'react'
+import { privateRequest,publicRequest } from '../../helpers/axios';
 import toast from 'react-hot-toast'
+import BetResultModal from './BetResultModel';
 export default function BlueModal() {
-  let [isOpen, setIsOpen] = useState(false)
- const [selectedNumber, setSelectedNumber] = useState(2);
+  const [userPlacedBet, setUserPlacedBet] = useState(false);
+
+    const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
+
+ let [isOpen, setIsOpen] = useState(false)
   const [betAmount, setBetAmount] = useState(100);
   const [selectedColor, setSelectedColor] = useState('blue');
-const [isBetPlaced, setIsBetPlaced] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
+  const [result, setResult] = useState('');
+  const[payout,setPayout]=useState(0)
   
 
+useEffect(() => {
+  let countdownInterval;
+
+  const fetchRemainingTime = async () => {
+    try {
+      const response = await publicRequest.get('/session/remaining');
+      const data = response.data;
+      const formattedTime = data.remainingTime;
+
+      const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
+      if (timeParts && timeParts.length === 3) {
+        const minutes = parseInt(timeParts[1]);
+        const seconds = parseInt(timeParts[2]);
+        setCountdown({ minutes, seconds });
+        startCountdown({ minutes, seconds });
+      }
+    } catch (error) {
+      console.error('Error fetching remaining time:', error);
+    }
+  };
+
+  const startCountdown = ({ minutes, seconds }) => {
+    let remainingSeconds = minutes * 60 + seconds;
+
+    countdownInterval = setInterval(() => {
+      if (remainingSeconds > 0) {
+        remainingSeconds--;
+
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+
+        setCountdown({ minutes: mins, seconds: secs });
+
+        if (remainingSeconds === 30 && !userPlacedBet) {
+          setShowModal(true);
+        }
+      } else {
+        setShowModal(false);
+        clearInterval(countdownInterval);
+        fetchRemainingTime(); 
+      }
+    }, 1000);
+  };
+
+  fetchRemainingTime();
+
+  return () => {
+    clearInterval(countdownInterval);
+  };
+}, [userPlacedBet]); // Update this dependency array according to your dependencies
+
+
+
+
+ 
+
   const calculatePotentialWin = () => {
-    let potentialWin = betAmount * 2; 
+    let potentialWin = betAmount * 4.5; 
 
     if (selectedColor === 'blue') {
-     if (selectedNumber === 2 || selectedNumber === 4 || selectedNumber === 6) {
-        potentialWin = betAmount * 4; 
-      }
+     
     }
     return potentialWin;
   };
+
 
   const handleColorSelection = (color) => {
     setSelectedColor(color);
   };
 
-  const handleNumberSelection = (number) => {
-    setSelectedNumber(number);
-  };
+ 
 
   const handleBetAmountSelection = (amount) => {
     setBetAmount(amount);
@@ -47,7 +106,7 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
 
   const handleDecrement = () => {
     if (betAmount > 1) {
-      setBetAmount(betAmount - 1);
+     setBetAmount(betAmount - 1);
     }
   };
 
@@ -58,19 +117,20 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
   try {
     const response = await privateRequest.post('/bet', {
       color: selectedColor,
-      number: selectedNumber,
       betAmount: betAmount,
     });
-    toast.success('Bet placed Successfully!');
-    toast.error(response.data.message);
+    setResult(response.data.message)
+      setPayout(response.data.bet.payout)
+   setIsOpen(false)
+     setUserPlacedBet(true);
+
+      
+     
+    toast.success('Bet placed Successfully!')
   } catch (error) {
     console.error('Submission Error:', error.response);
     toast.error(error.response.data.message);
-  } finally {
-    setTimeout(() => {
-      setIsBetPlaced(false); 
-    }, 60000); 
-  }
+  } 
 };
 
 
@@ -80,11 +140,12 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
         <button
           type="button"
           onClick={openModal}
-          className="rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+         className="rounded-md w-36 bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
         >
           Blue
         </button>
       </div>
+                                <BetResultModal show={showModal} onClose={()=>setShowModal(false)} payout={payout} result={result}  />
 
       <Transition appear show={isOpen} as={Fragment}>
        {user?( <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -116,45 +177,26 @@ const [isBetPlaced, setIsBetPlaced] = useState(false);
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Select Color
+                    Select Amount
                   </Dialog.Title>
                   <div className="mt-6 flex flex-col gap-8">
                     
                     <div className='flex flex-col justify-between mt-4 gap-4'>
-                      <h1 className="text-sm text-gray-500">
-                      Number you want to select?
-                    </h1>
-                    <div className='flex justify-between'>
-                      <button
-        className={`${
-          selectedNumber === 2 ? 'bg-blue-700' : 'bg-blue-400'
-        } hover:bg-blue-700 px-4 p-2 rounded hover:scale-105 transition-transform ease-in-out delay-400 duration-400`}
-        onClick={() => handleNumberSelection(2)}
-      >
-        2
-      </button>
-      <button
-        className={`${
-          selectedNumber === 4 ? 'bg-blue-700' : 'bg-blue-400'
-        } hover:bg-blue-700 px-4 p-2 rounded hover:scale-105 transition-transform ease-in-out delay-400 duration-400`}
-        onClick={() => handleNumberSelection(4)}
-      >
-        4
-      </button>
-      <button
-        className={`${
-          selectedNumber === 6 ? 'bg-blue-700' : 'bg-blue-400'
-        } hover:bg-blue-700 px-4 p-2 rounded hover:scale-105 transition-transform ease-in-out delay-400 duration-400`}
-        onClick={() => handleNumberSelection(6)}
-      >
-        6
-      </button>
-                      </div>
+                           <div className='flex flex-col gap-4 mt-4'>
+  <label htmlFor='betAmount' className='text-sm text-gray-500'>
+    Enter the amount you want to bet:
+  </label>
+  <input
+    id='betAmount'
+    type='number'
+    className='border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+    value={betAmount}
+    onChange={(e) => setBetAmount(Number(e.target.value))}
+  />
+</div>
                     </div>
                     <div className='flex flex-col justify-between mt-4 gap-4'>
-                      <h1 className="text-sm text-gray-500">
-                      Money you want to bet?
-                    </h1>
+                    
                      <div className="flex justify-between">
         <button
           className={`${

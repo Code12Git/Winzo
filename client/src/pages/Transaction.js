@@ -67,7 +67,7 @@ const Transaction = () => {
 				<img
 					src={img}
 					alt="Paytm QR Code"
-					className="w-96 h-96"
+					className="w-80 h-80 rounded-md"
 					class="mx-auto"
 				/>
 			</div>
