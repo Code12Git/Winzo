@@ -20,8 +20,20 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Applying middleware
+const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+app.use(
+	cors({
+		origin: function (origin, callback) {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
+	})
+);
 app.use(express.json());
-app.use(cors());
+
 app.use("/api/auth", authRoute);
 app.use("/api", forgotRoute);
 app.use("/api/superadmin", SuperadminRoute);

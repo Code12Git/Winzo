@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { privateRequest } from "@/helpers/axios";
 import { ScreenshotDetails } from "@/types/types";
-import Link from "next/link";
 import Image from "next/image";
 const Screenshots = () => {
 	const [screenshots, setScreenshots] = useState<ScreenshotDetails[] | null>(
@@ -16,7 +15,6 @@ const Screenshots = () => {
 				if (response.data && response.data.screenshots) {
 					setScreenshots(response.data.screenshots);
 				}
-				console.log(response.data);
 			} catch (error) {
 				console.error("Error fetching screenshots:", error);
 			}
@@ -65,10 +63,7 @@ const Screenshots = () => {
 										Name: {screenshot.user.name}
 									</p>
 									<p className="text-sm text-gray-600 mb-1">
-										Email: {screenshot.user.email}
-									</p>
-									<p className="text-sm text-gray-600 mb-1">
-										Username: {screenshot.user.username}
+										Phone: {screenshot.user.phone}
 									</p>
 								</>
 							)}

@@ -1,8 +1,6 @@
-import Carousel from "../components/common/Carousel";
 import Balance from "../components/Balance";
 import Timer from "../components/Timer";
 import ColorBet from "../components/ColorBet";
-import React from "react";
 
 const Dashboard = () => {
 	return (

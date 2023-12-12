@@ -8,7 +8,7 @@ export default function BlueModal() {
 
     const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
- let [isOpen, setIsOpen] = useState(false)
+ const [isOpen, setIsOpen] = useState(false)
   const [betAmount, setBetAmount] = useState(100);
   const [selectedColor, setSelectedColor] = useState('blue');
   const [showModal, setShowModal] = useState(false);
@@ -65,7 +65,7 @@ useEffect(() => {
   return () => {
     clearInterval(countdownInterval);
   };
-}, [userPlacedBet]); // Update this dependency array according to your dependencies
+}, [userPlacedBet,showModal]); 
 
 
 
@@ -75,16 +75,12 @@ useEffect(() => {
   const calculatePotentialWin = () => {
     let potentialWin = betAmount * 4.5; 
 
-    if (selectedColor === 'blue') {
-     
-    }
+    if (selectedColor === 'blue') 
     return potentialWin;
   };
 
 
-  const handleColorSelection = (color) => {
-    setSelectedColor(color);
-  };
+
 
  
 
@@ -121,10 +117,10 @@ useEffect(() => {
     });
     setResult(response.data.message)
       setPayout(response.data.bet.payout)
-   setIsOpen(false)
-     setUserPlacedBet(true);
+      setUserPlacedBet(true);
+      setIsOpen(false)
 
-      
+     
      
     toast.success('Bet placed Successfully!')
   } catch (error) {
@@ -145,7 +141,14 @@ useEffect(() => {
           Blue
         </button>
       </div>
-                                <BetResultModal show={showModal} onClose={()=>setShowModal(false)} payout={payout} result={result}  />
+{userPlacedBet && (
+  <BetResultModal
+    show={showModal}
+    onClose={() => setShowModal(false)}
+    payout={payout}
+    result={result}
+  />
+)}
 
       <Transition appear show={isOpen} as={Fragment}>
        {user?( <Dialog as="div" className="relative z-10" onClose={closeModal}>

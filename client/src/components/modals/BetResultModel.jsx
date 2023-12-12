@@ -1,5 +1,5 @@
-import React from 'react';
 import Modal from 'react-modal';
+import PropTypes from 'prop-types';
 
 const BetResultModal = ({ show, result, onClose, payout }) => {
   const customStyles = {
@@ -39,7 +39,7 @@ const BetResultModal = ({ show, result, onClose, payout }) => {
               {result}
             </p>
           ) : (
-            <p className="text-xl text-white mb-6">You didn't place a bet for this session.</p>
+            <p className="text-xl text-white mb-6">You didn{"'"}t place a bet for this session.</p>
           )}
 
           <h2 className="text-2xl font-bold mb-4 text-white">Payout</h2>
@@ -54,6 +54,13 @@ const BetResultModal = ({ show, result, onClose, payout }) => {
       )}
     </div>
   );
+};
+
+BetResultModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  result: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  payout: PropTypes.number.isRequired,
 };
 
 export default BetResultModal;

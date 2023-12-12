@@ -1,8 +1,7 @@
-import React,{useEffect,useState} from "react";
+import {useEffect,useState} from "react";
 import { motion } from "framer-motion";
 import { privateRequest } from "../helpers/axios";
-import {NavLink} from 'react-router-dom'
-import toast from "react-hot-toast";
+
 const Balance = () => {
   const [balance, setBalance] = useState(
 		null
@@ -25,7 +24,6 @@ useEffect(() => {
     return () => clearInterval(interval);
   }, []); 
 
-  const user = JSON.parse(localStorage.getItem('user'));
 
 
  return (

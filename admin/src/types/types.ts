@@ -1,26 +1,15 @@
-export type TopDeal = {
-    id: number,
-    img: string,
-    name: string,
-    email: string,
-    transaction: number
-}
 
 export type Login = {
     phone: string,
     password: string
 }
 export interface AuthError {
-    email?: string,
     name?: string,
-    username?: string,
     password?: string
 }
 
 export type User = {
     id: number;
-    email: string;
-    username: string;
     phone: string;
     Role: string;
     countryCode: string;
@@ -42,10 +31,9 @@ export type TransactionDetails = {
     id: number;
     transactionId: string;
     user: {
-        email: string;
         id: number;
         name: string;
-        username: string;
+        phone: string;
     };
     createdAt: string
 };
@@ -54,14 +42,15 @@ export type ScreenshotDetails = {
     id: number;
     screenshot: string;
     userId: number;
+    phone: string;
     user?: User;
     createdAt: string;
 };
 export type BalanceDetails = {
     id: number,
-    email: string,
     name: string,
-    username: string,
+    phone: string,
+
     balance: number
 }
 

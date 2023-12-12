@@ -28,14 +28,11 @@ const UserModal: React.FC<UserProps> = ({ user }) => {
 						<div className="mb-4">
 							<p className="text-xl text-gray-900 mb-2">ID: {user.id}</p>
 							<p className="text-xl text-gray-900 mb-2">Name: {user.name}</p>
-							<p className="text-xl text-red-600 mb-2">Email: {user.email}</p>
 							<p className="text-xl text-blue-600 mb-2">
 								Phone: {user.countryCode}
 								{user.phone}
 							</p>
-							<p className="text-xl text-purple-600 mb-2">
-								Username: {user.username}
-							</p>
+
 							<p className="text-xl text-pink-600 mb-2">Role: {user.Role}</p>
 						</div>
 						<button

@@ -21,7 +21,6 @@ const CreateSession = () => {
 
 		try {
 			const res = await privateRequest.post("/session", session);
-			console.log(res);
 			if (res.data.success === true) {
 				toast.success("Session created successfully");
 			} else {

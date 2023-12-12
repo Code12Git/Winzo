@@ -1,5 +1,7 @@
-import React, { useEffect,useState } from 'react';
+import { useEffect,useState } from 'react';
 import { publicRequest } from '../helpers/axios';
+import PropTypes from 'prop-types';
+
 const Details = ({ fetchSession, session }) => {
   const [remainingTime, setRemainingTime] = useState('');
 
@@ -56,6 +58,10 @@ const lastThreeSessions = session?.slice(-5).reverse();
       </div>
     </div>
   );
+};
+Details.propTypes = {
+  fetchSession: PropTypes.func.isRequired,
+  session: PropTypes.any, 
 };
 
 export default Details;

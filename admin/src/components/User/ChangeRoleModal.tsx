@@ -15,7 +15,6 @@ const RoleModal: React.FC<ModalProps> = ({ user, fetchUsers }) => {
 
 	const handleChangeRole = (newValue: string) => {
 		setSelectedOption(newValue);
-		console.log(newValue);
 	};
 
 	const handleSubmit = async () => {
@@ -23,7 +22,6 @@ const RoleModal: React.FC<ModalProps> = ({ user, fetchUsers }) => {
 			const res = await privateRequest.put(`/superadmin/${user.id}`, {
 				Role: selectedOption,
 			});
-			console.log(res.data);
 
 			toast.success("User Permission Successfully Added");
 			fetchUsers();

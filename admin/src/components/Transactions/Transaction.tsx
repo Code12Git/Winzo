@@ -51,8 +51,7 @@ const Transaction = () => {
 								<h3 className="text-lg font-semibold">User Details</h3>
 								<p>User ID: {transaction.user.id}</p>
 								<p>Name: {transaction.user.name}</p>
-								<p>Email: {transaction.user.email}</p>
-								<p>Username: {transaction.user.username}</p>
+								<p>Phone: {transaction.user.phone}</p>
 							</div>
 							<p>CreatedAt: {formatDateTime(transaction.createdAt)}</p>
 						</div>

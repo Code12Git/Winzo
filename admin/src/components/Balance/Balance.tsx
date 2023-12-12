@@ -13,7 +13,6 @@ const Balance = () => {
 		try {
 			if (typeof window !== "undefined") {
 				const res = await privateRequest.get("/transaction/all");
-				console.log(res.data);
 				setUsers(res.data.users);
 			}
 		} catch (error) {
@@ -27,9 +26,8 @@ const Balance = () => {
 				<div key={user.id} className="card bg-base-100 shadow-xl">
 					<div className="card-body">
 						<h2 className="card-title">Id:{user.id}</h2>
-						<p>Email:{user.email}</p>
 						<p>Name:{user.name}</p>
-						<p>Username:{user.username}</p>
+						<p>Phone:{user.phone}</p>
 						<p>Balance:{user.balance}</p>
 						<div className="card-actions justify-end">
 							<button>

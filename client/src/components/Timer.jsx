@@ -1,4 +1,4 @@
-import React, { useState,useRef, useEffect } from 'react';
+import  { useState,useRef, useEffect } from 'react';
 import Countdown from './common/Countdown';
 import { publicRequest } from '../helpers/axios';
 import Details from './Details';
@@ -22,7 +22,6 @@ const Timer = () => {
       const response = await publicRequest.get('/session/remaining');
       const currentRemainingTime = response.data.remainingTime;
 
-      // Check if the remaining time is different from the initial time
       if (currentRemainingTime !== initialTimeRef.current) {
         initialTimeRef.current = currentRemainingTime;
         fetchSession();

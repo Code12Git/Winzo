@@ -4,7 +4,6 @@ import { publicRequest } from '../../helpers/axios'
 import toast from 'react-hot-toast'
 export default function MyModal() {
   let [isOpen, setIsOpen] = useState(false)
-    const [showModal, setShowModal] = useState(false);
   const [credentials,setCredentials]=useState({
     name:'',
     phone:'',
@@ -18,9 +17,7 @@ export default function MyModal() {
     setIsOpen(false)
   }
 
-  function openModal() {
-    setIsOpen(true)
-  }
+  
 
 const inputChangeHandler = (e) => {
   const { name, value } = e.target;

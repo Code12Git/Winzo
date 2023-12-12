@@ -18,7 +18,6 @@ const BalanceModal = ({ id, fetchBalance }: BalanceModalProps) => {
 
 	const handleSubmit = async () => {
 		try {
-			console.log(balance);
 			await privateRequest.put(`/transaction/${id}/balance`, { balance });
 			setShowModal(false);
 			toast.success("Balance updated successfully");

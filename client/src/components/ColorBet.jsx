@@ -1,4 +1,3 @@
-import React from 'react'
 import RedModal from './modals/RedModal'
 import GreenModal from './modals/GreenModal'
 import BlueModal from './modals/BlueModal'

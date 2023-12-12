@@ -36,10 +36,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, fetchUsers }) => {
 					{user.id}
 				</div>
 				<div className="md:ml-4">
-					<p className="text-lg font-semibold text-purple-800">
-						{user.username}
-					</p>
-					<p className="text-sm text-purple-600">{user.email}</p>
 					<p className="text-sm text-purple-600">
 						{user.countryCode}
 						{user.phone}

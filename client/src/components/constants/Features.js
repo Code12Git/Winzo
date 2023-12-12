@@ -1,4 +1,4 @@
-import { ZapIcon, Dice2Icon, CloudMoonRainIcon } from "lucide-react";
+import { Dice2Icon, CloudMoonRainIcon } from "lucide-react";
 
 export const FeaturesProvided = [
 	{

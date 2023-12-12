@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import  { useState, useRef } from "react";
 import { useEffect } from "react";
 import { privateRequest } from "../helpers/axios";
 import { Cancel } from "@mui/icons-material";
@@ -27,48 +27,44 @@ const Transaction = () => {
 	};
 
 	const clickChangeHandler = async (e) => {
-		e.preventDefault();
+  e.preventDefault();
 
-		try {
-			if (!transaction.transactionId || !transaction.deposit) {
-				toast.error("Please provide both Transaction ID and Deposit.");
-				return;
-			}
+  try {
+    if (!transaction.transactionId || !transaction.deposit) {
+      toast.error("Please provide both Transaction ID and Deposit.");
+      return;
+    }
 
-			if (transaction.deposit < 300) {
-				toast.error("Deposit amount cannot be less than 300");
-				return;
-			}
+    if (transaction.deposit < 300) {
+      toast.error("Deposit amount cannot be less than 300");
+      return;
+    }
 
-			if (file) {
-				const data = new FormData();
-				data.append("screenshot", file);
+    if (!file) {
+      toast.error("Please upload a screenshot.");
+      return;
+    }
 
-				const screenshotRes = await formRequest.post("/screenshot", data);
-				toast.success("Screenshot changed successfully");
-			} else {
-				toast.error("Please upload a screenshot.");
-				return;
-			}
+    const screenshotData = new FormData();
+    screenshotData.append("screenshot", file);
+    await formRequest.post("/screenshot", screenshotData);
+    toast.success("Deposit Request sent successfully");
 
-			const transactionRes = await privateRequest.post(
-				"/transaction",
-				transaction
-			);
-		} catch (error) {
-			console.error("Error uploading screenshot or transaction:", error);
-		}
-	};
+    await privateRequest.post("/transaction", transaction);
+  } catch (error) {
+    console.error("Error uploading screenshot or transaction:", error);
+  }
+};
+
 
 	return (
-		<div class="flex flex-wrap justify-around">
-			<div class="text-center">
-				<h1 class="text-3xl font-bold mb-4">Paytm -: QR Code</h1>
+		<div className="flex flex-wrap justify-around">
+			<div className="text-center">
+				<h1 className="text-3xl font-bold mb-4">Paytm -: QR Code</h1>
 				<img
 					src={img}
 					alt="Paytm QR Code"
-					className="w-80 h-80 rounded-md"
-					class="mx-auto"
+				className="w-84 h-84 rounded-md mx-auto"
 				/>
 			</div>
 			<div className="flex flex-col gap-12  mt-10">
