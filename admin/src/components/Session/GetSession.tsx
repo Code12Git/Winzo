@@ -14,7 +14,7 @@ const GetSession = () => {
 	}, []);
 	const fetchAllSession = async () => {
 		try {
-			const sessionData = await publicRequest.get("/session");
+			const sessionData = await publicRequest.get("/session/all ");
 			setSessions(sessionData.data);
 		} catch (error) {
 			console.error("Error fetching session:", error);
@@ -62,7 +62,6 @@ const GetSession = () => {
 								<p className="font-semibold">ID: {session.id}</p>
 							</div>
 							<p>Color: {session.color}</p>
-							<p>Number: {session.number}</p>
 							<div className="flex justify-between mt-4">
 								<button>
 									{session.id !== undefined && (

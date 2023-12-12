@@ -19,7 +19,7 @@ useEffect(() => {
       }
     };
 
-    const interval = setInterval(fetchBalance, 10000); 
+   const interval = setInterval(fetchBalance, 30000); 
     fetchBalance();
 
     return () => clearInterval(interval);
@@ -42,8 +42,8 @@ useEffect(() => {
         <motion.div
           whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.8 }}
-         className="bg-green-500 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
-        >
+         className="bg-green-500 mt-4 md:mt-0 lg:mt-0 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+       >
           Telegram
         </motion.div>
       </div>

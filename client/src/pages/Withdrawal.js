@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { SiPaytm } from "react-icons/si";
-
+import DepositModal from "../components/modals/Deposit";
 const Withdrawal = () => {
 	const [withdrawalAmount, setWithdrawalAmount] = useState("");
 	const [bankName, setBankName] = useState("");
 	const [accountMemberName, setAccountMemberName] = useState("");
 	const [accountNumber, setAccountNumber] = useState("");
 	const [ifscCode, setIfscCode] = useState("");
+	const [showModal, setShowModal] = useState(false);
+
 	const [upiId, setUpiId] = useState("");
 	const handleWithdrawal = () => {
 		const amount = parseFloat(withdrawalAmount);
@@ -26,13 +28,14 @@ const Withdrawal = () => {
 		if (amount < 2000 || amount > 40000) {
 			toast.error("You can only withdraw between 2000 and 40000");
 		} else {
-			toast.error("Please deposit 500 rupees");
+			setShowModal(true);
 		}
 	};
 
 	return (
 		<>
 			<div className="max-w-md mx-auto mt-24  bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+				<DepositModal show={showModal} onClose={() => setShowModal(false)} />
 				<div className="mb-4">
 					<label
 						className="block text-gray-700 text-sm font-bold mb-2"

@@ -16,20 +16,12 @@ export default function UpdateSession({ id, fetchData }: Props) {
 
 	const [session, setSession] = useState<Session>({
 		color: "red",
-		number: 1,
 	});
-	const [filteredNumbers, setFilteredNumbers] = useState<number[]>([]);
 
-	const data: { color: string; number: number }[] = [
-		{ color: "red", number: 1 },
-		{ color: "red", number: 3 },
-		{ color: "red", number: 5 },
-		{ color: "blue", number: 2 },
-		{ color: "blue", number: 4 },
-		{ color: "blue", number: 6 },
-		{ color: "green", number: 7 },
-		{ color: "green", number: 9 },
-		{ color: "green", number: 8 },
+	const data: { color: string }[] = [
+		{ color: "red" },
+		{ color: "blue" },
+		{ color: "green" },
 	];
 
 	function closeModal() {
@@ -44,16 +36,7 @@ export default function UpdateSession({ id, fetchData }: Props) {
 		e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
 	) => {
 		const { name, value } = e.target;
-		const parsedValue = name === "color" ? value : parseInt(value);
-		setSession((prev) => ({ ...prev, [name]: parsedValue }));
-
-		if (name === "color") {
-			const selectedColor = value;
-			const numbersForColor = data
-				.filter((item) => item.color === selectedColor)
-				.map((item) => item.number);
-			setFilteredNumbers(numbersForColor);
-		}
+		setSession((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const SubmitHandler = async (
@@ -109,21 +92,6 @@ export default function UpdateSession({ id, fetchData }: Props) {
 								<option value="red">Red</option>
 								<option value="blue">Blue</option>
 								<option value="green">Green</option>
-							</select>
-						</div>
-						<div className="mt-2 flex flex-col gap-2">
-							<label>Number</label>
-							<select
-								name="number"
-								value={session.number}
-								onChange={handleChange}
-								className="w-36"
-							>
-								{filteredNumbers.map((number) => (
-									<option key={number} value={number}>
-										{number}
-									</option>
-								))}
 							</select>
 						</div>
 

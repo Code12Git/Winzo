@@ -50,7 +50,7 @@ const Countdown: React.FC<CountdownProps> = ({ fetchSession }) => {
 
 					setCountdown({ minutes: mins, seconds: secs });
 
-					if (remainingSeconds <= 20 && remainingSeconds > 0) {
+					if (remainingSeconds <= 30 && remainingSeconds > 0) {
 						setIsRed(true);
 					} else {
 						setIsRed(false);

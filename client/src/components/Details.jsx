@@ -1,11 +1,32 @@
-import React, { useEffect } from 'react';
-
+import React, { useEffect,useState } from 'react';
+import { publicRequest } from '../helpers/axios';
 const Details = ({ fetchSession, session }) => {
-  useEffect(() => {
-    fetchSession();
-  }, []);
+  const [remainingTime, setRemainingTime] = useState('');
 
-  const lastThreeSessions = session?.slice(-5).reverse();
+useEffect(() => {
+  const interval = setInterval(() => {
+    fetchRemainingTime();
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
+
+const fetchRemainingTime = async () => {
+  try {
+    const response = await publicRequest.get('/session/remaining');
+    setRemainingTime(response.data.remainingTime);
+  } catch (error) {
+    console.error('Error fetching remaining time:', error);
+  }
+};
+
+useEffect(() => {
+  if (parseInt(remainingTime) < 30) {
+    fetchSession(); 
+  }
+}, [remainingTime, fetchSession]);
+
+const lastThreeSessions = session?.slice(-5).reverse();
 
   return (
     <div className="overflow-x-auto mt-8">
@@ -28,7 +49,7 @@ const Details = ({ fetchSession, session }) => {
                 <td className="px-4 py-3">
                   <div className={`w-4 h-4 bg-${data.color}-400 rounded-full`}></div>
                 </td>
-              </tr>
+             </tr>
             ))}
           </tbody>
         </table>

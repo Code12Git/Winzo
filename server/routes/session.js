@@ -3,6 +3,7 @@ import {
 	createSession,
 	deleteSession,
 	getAllSession,
+	getAllSessionForUser,
 	getLatestSession,
 	remainingTime,
 	updateSession,
@@ -21,7 +22,10 @@ router.put("/:id", verifyTokenAndSuperAdmin, updateSession);
 router.delete("/:id", verifyTokenAndSuperAdmin, deleteSession);
 
 // Getting the session
-router.get("/", getAllSession);
+router.get("/", getAllSessionForUser);
+
+// Getting All Session
+router.get("/all", getAllSession);
 
 // Remaining Time
 router.get("/remaining", remainingTime);

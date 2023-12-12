@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {  publicRequest } from '../../helpers/axios';
+import { publicRequest } from '../../helpers/axios';
 const Countdown = ({fetchLatestSession,fetchSession}) => {
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
   const [isRed, setIsRed] = useState(false);
- 
 
  useEffect(() => {
   let countdownInterval;
@@ -11,7 +10,7 @@ const Countdown = ({fetchLatestSession,fetchSession}) => {
   const fetchRemainingTime = async () => {
     try {
       const response = await publicRequest.get('/session/remaining');
-      const data = response.data;
+     const data = response.data;
       const formattedTime = data.remainingTime;
 
       const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
@@ -26,52 +25,47 @@ const Countdown = ({fetchLatestSession,fetchSession}) => {
     }
   };
 
-  const startCountdown = ({ minutes, seconds }) => {
-    let remainingSeconds = minutes * 60 + seconds;
+ const startCountdown = ({ minutes, seconds }) => {
+  let remainingSeconds = minutes * 60 + seconds;
 
-    countdownInterval = setInterval(() => {
-      if (remainingSeconds > 0) {
-        remainingSeconds--;
+  countdownInterval = setInterval(() => {
+    if (remainingSeconds > 0) {
+      remainingSeconds--;
 
-        const mins = Math.floor(remainingSeconds / 60);
-        const secs = remainingSeconds % 60;
+      const mins = Math.floor(remainingSeconds / 60);
+      const secs = remainingSeconds % 60;
 
-        setCountdown(prevCountdown => ({ minutes: mins, seconds: secs }));
+      setCountdown({ minutes: mins, seconds: secs });
 
-        if (remainingSeconds <= 30 && remainingSeconds > 0) {
-          setIsRed(true);
-        } else {
-          setIsRed(false);
-        }
-
-        if (remainingSeconds === 30) {
-          fetchLatestSession();
-          fetchSession();
-        }
-      } else {
+      if (remainingSeconds <= 30 && remainingSeconds > 0) {
         setIsRed(true);
-        clearInterval(countdownInterval);
-        fetchRemainingTime();
+      } else {
+        setIsRed(false);
       }
-    }, 1000);
-  };
+      
+      
+    } else {
+      setIsRed(true);
+      clearInterval(countdownInterval);
+      fetchRemainingTime();
+    }
+  }, 1000);
+};
 
   fetchRemainingTime();
 
   return () => {
     clearInterval(countdownInterval);
   };
-}, [fetchLatestSession, fetchSession]);
-
+}, []);
 
 
 
 
   return (
     <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
-
       <div className={`flex flex-col ${isRed ? 'text-red-600' : 'text-black'}`}>
-      <span className="countdown font-mono text-5xl">
+        <span className="countdown font-mono text-5xl">
           <span style={{ '--value': countdown.minutes }}>{String(countdown.minutes).padStart(2, '0')}</span>
         </span>
         min

@@ -6,37 +6,14 @@ import { Session } from "@/types/types";
 
 const CreateSession = () => {
 	const [session, setSession] = useState<Session>({
-		number: 1,
 		color: "red",
 	});
-	const [filteredNumbers, setFilteredNumber] = useState<number[]>([]);
-
-	const data: { color: string; number: number }[] = [
-		{ color: "red", number: 1 },
-		{ color: "red", number: 3 },
-		{ color: "red", number: 5 },
-		{ color: "blue", number: 2 },
-		{ color: "blue", number: 4 },
-		{ color: "blue", number: 6 },
-		{ color: "green", number: 7 },
-		{ color: "green", number: 9 },
-		{ color: "green", number: 8 },
-	];
 
 	const inputChangeHandler = (
 		e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
 	) => {
 		const { name, value } = e.target;
-		const parsedValue = name === "color" ? value : parseInt(value);
-		setSession((prev) => ({ ...prev, [name]: parsedValue }));
-
-		if (name === "color") {
-			const selectedColor = value;
-			const numbersForColor = data
-				.filter((item) => item.color === selectedColor)
-				.map((item) => item.number);
-			setFilteredNumber(numbersForColor);
-		}
+		setSession((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -48,10 +25,10 @@ const CreateSession = () => {
 			if (res.data.success === true) {
 				toast.success("Session created successfully");
 			} else {
-				toast.error("Failed to update session");
+				toast.error("Failed to create session");
 			}
 		} catch (err) {
-			toast.error("Error updating session");
+			toast.error("Error creating session");
 		}
 	};
 
@@ -76,24 +53,6 @@ const CreateSession = () => {
 						<option value="red">Red</option>
 						<option value="blue">Blue</option>
 						<option value="green">Green</option>
-					</select>
-				</div>
-				<div className="mb-4">
-					<label htmlFor="numberSelect" className="block mb-2">
-						Select Number:
-					</label>
-					<select
-						onChange={inputChangeHandler}
-						name="number"
-						value={session.number}
-						id="numberSelect"
-						className="border border-gray-300 rounded px-3 py-2 w-full"
-					>
-						{filteredNumbers.map((number) => (
-							<option key={number} value={number}>
-								{number}
-							</option>
-						))}
 					</select>
 				</div>
 

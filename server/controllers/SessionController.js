@@ -82,6 +82,8 @@ export const createSession = async (req, res) => {
 			},
 		});
 
+		adminCreatedSession = true;
+
 		res.status(200).json({
 			success: true,
 			message: "Session created successfully!",
@@ -138,6 +140,34 @@ export const deleteSession = async (req, res) => {
 };
 
 // Getting all session
+export const getAllSessionForUser = async (req, res) => {
+	try {
+		const remainingTime = getRemainingTime();
+
+		// Fetch all sessions
+		const allSessions = await prisma.session.findMany();
+
+		// Check if remaining time is above 30 seconds and there are sessions available
+		if (remainingTime > 30000 && allSessions.length > 0) {
+			const latestSession = await prisma.session.findFirst({
+				orderBy: { createdAt: "desc" },
+			});
+
+			// Filter out the latest session if remaining time is above 30 seconds
+			const sessionsToShow = allSessions.filter(
+				(session) => session.id !== latestSession?.id
+			);
+
+			res.status(200).json(sessionsToShow);
+		} else {
+			res.status(200).json(allSessions); // Return all sessions if remaining time is <= 30 seconds or no sessions available
+		}
+	} catch (err) {
+		res.status(500).json({ message: err.message });
+	}
+};
+
+// Get All sessions
 export const getAllSession = async (req, res) => {
 	try {
 		const allSessions = await prisma.session.findMany();
@@ -150,13 +180,25 @@ export const getAllSession = async (req, res) => {
 
 export const getLatestSession = async (req, res) => {
 	try {
-		const latestSession = await prisma.session.findFirst({
-			orderBy: { createdAt: "desc" },
-		});
+		const remainingTime = getRemainingTime();
 
-		const latestSessionName = latestSession ? latestSession.id : "";
+		let latestSessionId = "";
 
-		res.status(200).json({ latestSessionName });
+		if (remainingTime <= 30000) {
+			const latestSession = await prisma.session.findFirst({
+				orderBy: { createdAt: "desc" },
+			});
+			latestSessionId = latestSession ? latestSession.id : "";
+		} else {
+			const sessions = await prisma.session.findMany({
+				orderBy: { createdAt: "desc" },
+				take: 2,
+				skip: 1,
+			});
+			latestSessionId = sessions.length > 0 ? sessions[0].id : "";
+		}
+
+		res.status(200).json({ latestSessionId });
 	} catch (err) {
 		res.status(500).json({ message: err.message });
 	}

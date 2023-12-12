@@ -30,7 +30,7 @@ export type User = {
 export type Session = {
     id?: number;
     color: string;
-    number: number;
+
 
 };
 
