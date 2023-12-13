@@ -1,6 +1,7 @@
 import express from "express";
 import {
 	createSession,
+	deleteAllSessions,
 	deleteSession,
 	getAllSession,
 	getAllSessionForUser,
@@ -20,6 +21,9 @@ router.put("/:id", verifyTokenAndSuperAdmin, updateSession);
 
 // Deleting the session
 router.delete("/:id", verifyTokenAndSuperAdmin, deleteSession);
+
+// Deletin all Session
+router.delete("/", deleteAllSessions);
 
 // Getting the session
 router.get("/", getAllSessionForUser);

@@ -24,6 +24,8 @@ model User {
   balance          Int?
   amount           Int?
   BankAccount      BankAccount[]
+
+  @@index([phone])
 }
 
 model Transaction {

@@ -1,63 +1,59 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import { publicRequest } from '../../helpers/axios';
 
 const Countdown = () => {
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
   const [isRed, setIsRed] = useState(false);
+  const countdownIntervalRef = useRef(null); // Ref to hold the countdown interval
+
+  const startCountdown = ({ minutes, seconds }) => {
+    let remainingSeconds = minutes * 60 + seconds;
+
+    countdownIntervalRef.current = setInterval(() => {
+      if (remainingSeconds > 0) {
+        remainingSeconds--;
+
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+
+        setCountdown({ minutes: mins, seconds: secs });
+
+        if (remainingSeconds <= 30 && remainingSeconds > 0) {
+          setIsRed(true);
+        } else {
+          setIsRed(false);
+        }
+      } else {
+        setIsRed(false);
+        clearInterval(countdownIntervalRef.current);
+        fetchRemainingTime(); // Call fetchRemainingTime when the countdown reaches 0
+      }
+    }, 1000);
+  };
+
+  const fetchRemainingTime = async () => {
+    try {
+      const response = await publicRequest.get('/session/remaining');
+      const data = response.data;
+      const formattedTime = data.remainingTime;
+
+      const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
+      if (timeParts && timeParts.length === 3) {
+        const minutes = parseInt(timeParts[1]);
+        const seconds = parseInt(timeParts[2]);
+        setCountdown({ minutes, seconds });
+        startCountdown({ minutes, seconds });
+      }
+    } catch (error) {
+      console.error('Error fetching remaining time:', error);
+    }
+  };
 
   useEffect(() => {
-    let countdownInterval;
-
-    const fetchRemainingTime = async () => {
-      try {
-        const response = await publicRequest.get('/session/remaining');
-        const data = response.data;
-        const formattedTime = data.remainingTime;
-
-        const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
-        if (timeParts && timeParts.length === 3) {
-          const minutes = parseInt(timeParts[1]);
-          const seconds = parseInt(timeParts[2]);
-          setCountdown({ minutes, seconds });
-          startCountdown({ minutes, seconds });
-        }
-      } catch (error) {
-        console.error('Error fetching remaining time:', error);
-      }
-    };
-
-    const startCountdown = ({ minutes, seconds }) => {
-      clearInterval(countdownInterval); 
-      
-      let remainingSeconds = minutes * 60 + seconds;
-
-
-      countdownInterval = setInterval(() => {
-        if (remainingSeconds > 0) {
-          remainingSeconds--;
-
-          const mins = Math.floor(remainingSeconds / 60);
-          const secs = remainingSeconds % 60;
-
-          setCountdown({ minutes: mins, seconds: secs });
-
-          if (remainingSeconds <= 30 && remainingSeconds > 0) {
-            setIsRed(true);
-          } else {
-            setIsRed(false);
-          }
-        } else {
-          setIsRed(true);
-          clearInterval(countdownInterval);
-          fetchRemainingTime();
-        }
-      }, 1000);
-    };
-
-    fetchRemainingTime();
+    fetchRemainingTime(); // Initial fetch of remaining time
 
     return () => {
-      clearInterval(countdownInterval);
+      clearInterval(countdownIntervalRef.current);
     };
   }, []);
 

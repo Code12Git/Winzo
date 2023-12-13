@@ -203,3 +203,17 @@ export const getLatestSession = async (req, res) => {
 		res.status(500).json({ message: err.message });
 	}
 };
+
+export const deleteAllSessions = async (req, res) => {
+	try {
+		// Deleting all sessions
+		const deleteResult = await prisma.session.deleteMany();
+
+		res.status(200).json({
+			success: true,
+			message: `${deleteResult.count} sessions deleted successfully.`,
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message, success: false });
+	}
+};
