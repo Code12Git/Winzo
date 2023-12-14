@@ -3,6 +3,7 @@ import { getRemainingTime } from "./SessionController.js";
 import { sessionUserBets } from "./SessionController.js";
 import prisma from "../db/conn.js"; // Import Prisma instance
 
+// Create Bet Controller
 export const createBetController = async (req, res) => {
 	try {
 		const loggedInUser = req.user;
@@ -13,7 +14,6 @@ export const createBetController = async (req, res) => {
 				.status(401)
 				.json({ success: false, message: "User not logged in" });
 		}
-
 		const parsedBetAmount = Number(betAmount);
 
 		if (isNaN(parsedBetAmount)) {
@@ -102,7 +102,8 @@ export const createBetController = async (req, res) => {
 				color,
 				betAmount: parsedBetAmount,
 				payout,
-				userId: loggedInUser.id,
+				user: { connect: { id: loggedInUser.id } },
+				session: { connect: { id: latestSession.id } },
 				isWinner,
 			},
 		});
@@ -119,6 +120,7 @@ export const createBetController = async (req, res) => {
 	}
 };
 
+// Get Bet Controller
 export const getBetController = async (req, res) => {
 	try {
 		const loggedInUser = req.user;
@@ -129,13 +131,23 @@ export const getBetController = async (req, res) => {
 				.json({ success: false, message: "User not logged in" });
 		}
 
+		// Retrieve the latest session
+		const latestSession = await prisma.session.findFirst({
+			orderBy: { createdAt: "desc" },
+		});
+		if (!latestSession) {
+			return res
+				.status(404)
+				.json({ success: false, message: "No session found" });
+		}
+
+		// Check if the user has placed a bet for the latest session
 		const latestBet = await prisma.bet.findFirst({
 			where: {
 				userId: loggedInUser.id,
+				sessionId: latestSession.id, // Filter by the latest session ID
 			},
-			orderBy: {
-				createdAt: "desc",
-			},
+			orderBy: { createdAt: "desc" },
 			select: {
 				color: true,
 				betAmount: true,
@@ -148,13 +160,46 @@ export const getBetController = async (req, res) => {
 		if (!latestBet) {
 			return res.status(404).json({
 				success: false,
-				message: "No bet found for the user",
+				message: "User has not placed a bet for the latest session",
 			});
 		}
 
 		return res.status(200).json({
 			success: true,
 			latestBet,
+		});
+	} catch (error) {
+		return res.status(500).json({ success: false, error: error.message });
+	}
+};
+
+// Get All Bet Controller
+export const getAllBetsController = async (req, res) => {
+	try {
+		// Fetch all bets from the database
+		const allBets = await prisma.bet.findMany({
+			orderBy: {
+				createdAt: "desc", // Order the bets by creation date, change this as needed
+			},
+			select: {
+				color: true,
+				betAmount: true,
+				payout: true,
+				isWinner: true,
+				createdAt: true,
+			},
+		});
+
+		if (!allBets || allBets.length === 0) {
+			return res.status(404).json({
+				success: false,
+				message: "No bets found",
+			});
+		}
+
+		return res.status(200).json({
+			success: true,
+			allBets,
 		});
 	} catch (error) {
 		return res.status(500).json({ success: false, error: error.message });

@@ -18,7 +18,7 @@ useEffect(() => {
       }
     };
 
-   const interval = setInterval(fetchBalance, 30000); 
+   const interval = setInterval(fetchBalance, 60000); 
     fetchBalance();
 
     return () => clearInterval(interval);

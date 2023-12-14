@@ -1,7 +1,14 @@
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 
-const BetResultModal = ({ show, result, onClose, payout }) => {
+const BetResultModal = ({
+ 
+ 
+  
+  onClose,
+  show,
+  latestBetDetails,
+}) => {
   const customStyles = {
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -22,11 +29,11 @@ const BetResultModal = ({ show, result, onClose, payout }) => {
       background: 'linear-gradient(to right, #8e2de2, #4a00e0)',
     },
   };
-  const user = JSON.parse(localStorage.getItem('user'));
 
+ 
   return (
     <div>
-      {user && (
+      {show && (
         <Modal
           isOpen={show}
           onRequestClose={onClose}
@@ -34,16 +41,39 @@ const BetResultModal = ({ show, result, onClose, payout }) => {
           contentLabel="Bet Result Modal"
         >
           <h2 className="text-2xl font-bold mb-4 text-white">Bet Result</h2>
-          {result ? (
-            <p className="text-xl text-white mb-6 bg-gradient-to-r from-purple-500 via-violet-400 to-red-400 bg-clip-text text-transparent">
-              {result}
-            </p>
-          ) : (
-            <p className="text-xl text-white mb-6">You didn{"'"}t place a bet for this session.</p>
-          )}
+         {latestBetDetails !== null && (
+  latestBetDetails.isWinner ? (
+    <p className="text-xl text-white mb-6 bg-gradient-to-r from-purple-500 via-violet-400 to-red-400 bg-clip-text text-transparent">
+      Congratulations you won
+    </p>
+  ) : (
+    <p className="text-xl text-white mb-6">
+      You didn{"'"}t win this time.
+    </p>
+  )
+)}
 
-          <h2 className="text-2xl font-bold mb-4 text-white">Payout</h2>
-          <p className="text-xl text-white mb-6">{payout}</p>
+
+          <h2 className="text-2xl font-bold mb-4 text-white">
+            Latest Bet Details
+          </h2>
+          {latestBetDetails ? (
+            <>
+              <p className="text-xl text-white mb-6">
+                Bet Amount: {latestBetDetails.betAmount}
+              </p>
+              <p className="text-xl text-white mb-6">
+                Selected Color: {latestBetDetails.color}
+              </p>
+              <p className="text-xl text-white mb-6">
+                Payout: {latestBetDetails.payout}
+              </p>
+            </>
+          ) : (
+            <p className="text-xl text-white mb-6">
+              No bet placed for the latest session.
+            </p>
+          )}
           <button
             onClick={onClose}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -57,10 +87,15 @@ const BetResultModal = ({ show, result, onClose, payout }) => {
 };
 
 BetResultModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  result: PropTypes.string.isRequired,
+
   onClose: PropTypes.func.isRequired,
-  payout: PropTypes.number.isRequired,
+  show: PropTypes.bool.isRequired,
+  latestBetDetails: PropTypes.shape({
+    isWinner: PropTypes.bool.isRequired,
+    betAmount: PropTypes.number.isRequired,
+    color: PropTypes.string.isRequired,
+    payout: PropTypes.number.isRequired,
+  }),
 };
 
 export default BetResultModal;

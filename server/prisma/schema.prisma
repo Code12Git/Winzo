@@ -54,6 +54,8 @@ model Bet {
   payout    Int?
   isWinner  Boolean?
   createdAt DateTime @default(now())
+  session   Session  @relation(fields: [sessionId], references: [id])
+  sessionId Int
 }
 
 model Session {
@@ -61,6 +63,7 @@ model Session {
   color     String
   createdAt DateTime  @default(now())
   startTime DateTime?
+  bets      Bet[]
 }
 
 model Qr {

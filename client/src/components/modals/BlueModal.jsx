@@ -1,71 +1,17 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState,useEffect } from 'react'
-import { privateRequest,publicRequest } from '../../helpers/axios';
+import { Fragment, useState } from 'react'
+import { privateRequest } from '../../helpers/axios';
 import toast from 'react-hot-toast'
-import BetResultModal from './BetResultModel';
 export default function BlueModal() {
-  const [userPlacedBet, setUserPlacedBet] = useState(false);
 
-    const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
  const [isOpen, setIsOpen] = useState(false)
   const [betAmount, setBetAmount] = useState(100);
   const [selectedColor, setSelectedColor] = useState('blue');
-  const [showModal, setShowModal] = useState(false);
-  const [result, setResult] = useState('');
-  const[payout,setPayout]=useState(0)
+ 
   
 
-useEffect(() => {
-  let countdownInterval;
 
-  const fetchRemainingTime = async () => {
-    try {
-      const response = await publicRequest.get('/session/remaining');
-      const data = response.data;
-      const formattedTime = data.remainingTime;
-
-      const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
-      if (timeParts && timeParts.length === 3) {
-        const minutes = parseInt(timeParts[1]);
-        const seconds = parseInt(timeParts[2]);
-        setCountdown({ minutes, seconds });
-        startCountdown({ minutes, seconds });
-      }
-    } catch (error) {
-      console.error('Error fetching remaining time:', error);
-    }
-  };
-
-  const startCountdown = ({ minutes, seconds }) => {
-    let remainingSeconds = minutes * 60 + seconds;
-
-    countdownInterval = setInterval(() => {
-      if (remainingSeconds > 0) {
-        remainingSeconds--;
-
-        const mins = Math.floor(remainingSeconds / 60);
-        const secs = remainingSeconds % 60;
-
-        setCountdown({ minutes: mins, seconds: secs });
-
-        if (remainingSeconds === 30 && !userPlacedBet) {
-          setShowModal(true);
-        }
-      } else {
-        setShowModal(false);
-        clearInterval(countdownInterval);
-        fetchRemainingTime(); 
-      }
-    }, 1000);
-  };
-
-  fetchRemainingTime();
-
-  return () => {
-    clearInterval(countdownInterval);
-  };
-}, [userPlacedBet,showModal]); 
 
 
 
@@ -111,18 +57,18 @@ useEffect(() => {
  const handleSubmit = async () => {
 
   try {
-    const response = await privateRequest.post('/bet', {
+  await privateRequest.post('/bet', {
       color: selectedColor,
       betAmount: betAmount,
     });
-    setResult(response.data.message)
-      setPayout(response.data.bet.payout)
-      setUserPlacedBet(true);
+   
       setIsOpen(false)
 
      
-     
+    
     toast.success('Bet placed Successfully!')
+        await privateRequest.get('/bet'); // Assuming the endpoint for getting the latest bet is '/bet'
+
   } catch (error) {
     console.error('Submission Error:', error.response);
     toast.error(error.response.data.message);
@@ -141,14 +87,7 @@ useEffect(() => {
           Blue
         </button>
       </div>
-{userPlacedBet && (
-  <BetResultModal
-    show={showModal}
-    onClose={() => setShowModal(false)}
-    payout={payout}
-    result={result}
-  />
-)}
+
 
       <Transition appear show={isOpen} as={Fragment}>
        {user?( <Dialog as="div" className="relative z-10" onClose={closeModal}>
