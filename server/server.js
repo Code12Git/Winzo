@@ -23,7 +23,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
 	"https://colorbet.onrender.com",
 	"https://colorbetadmin.vercel.app",
-	"http://localhost:5173",
+	"https://colorbet.vercel.app/",
 ];
 app.use(
 	cors({
