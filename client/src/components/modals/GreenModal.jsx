@@ -72,7 +72,6 @@ export default function GreenModal() {
         <button
           type="button"
           onClick={openModal}
-          className="rounded-md w-36 bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
        >
           Green
         </button>

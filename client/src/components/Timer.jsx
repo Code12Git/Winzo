@@ -121,6 +121,7 @@ const fetchLatestSession = async () => {
   }, []);
 const lastThreeSessions = session?.slice(-5).reverse();
 
+const user = JSON.parse(localStorage.getItem('user'));
 
 
   return (
@@ -132,11 +133,11 @@ const lastThreeSessions = session?.slice(-5).reverse();
           </h1>
          <p className='text-2xl animate-beat text-blue-600'>{latestSession}</p>
         </div>
-         <BetResultModal
+       {user&& <BetResultModal
    latestBetDetails={latestBetDetails}
     onClose={() => setShowModal(false)}
     show={showModal}
-  />
+  />}
         <div className='text-center'>
           <h1 className='text-4xl font-bold mb-2 text-yellow-800'>Count Down</h1>
           <div className="grid grid-flow-col gap-5 text-center auto-cols-max">

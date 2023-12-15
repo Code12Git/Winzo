@@ -82,7 +82,6 @@ export default function BlueModal() {
         <button
           type="button"
           onClick={openModal}
-         className="rounded-md w-36 bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
         >
           Blue
         </button>

@@ -36,7 +36,7 @@ const BetResultModal = ({
       {show && (
         <Modal
           isOpen={show}
-          onRequestClose={onClose}
+         onRequestClose={onClose}
           style={customStyles}
           contentLabel="Bet Result Modal"
         >

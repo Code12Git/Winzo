@@ -39,7 +39,23 @@ export const createBetController = async (req, res) => {
 					"Bet can only be placed when the remaining time is above 30 seconds.",
 			});
 		}
+		const user = await prisma.user.findUnique({
+			where: { id: loggedInUser.id },
+			select: { balance: true },
+		});
 
+		if (!user) {
+			return res
+				.status(404)
+				.json({ success: false, message: "User not found" });
+		}
+
+		if (user.balance < parsedBetAmount) {
+			return res.status(400).json({
+				success: false,
+				message: "Insufficient balance for this action",
+			});
+		}
 		const latestSession = await prisma.session.findFirst({
 			orderBy: { createdAt: "desc" },
 		});
@@ -58,24 +74,6 @@ export const createBetController = async (req, res) => {
 					userBets.add(loggedInUser.id);
 				}
 			}
-		}
-
-		const user = await prisma.user.findUnique({
-			where: { id: loggedInUser.id },
-			select: { balance: true },
-		});
-
-		if (!user) {
-			return res
-				.status(404)
-				.json({ success: false, message: "User not found" });
-		}
-
-		if (user.balance < parsedBetAmount) {
-			return res.status(400).json({
-				success: false,
-				message: "Insufficient balance for this action",
-			});
 		}
 
 		// Deduct the bet amount

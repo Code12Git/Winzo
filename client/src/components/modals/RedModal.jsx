@@ -73,7 +73,6 @@ export default function RedModal() {
         <button
           type="button"
           onClick={openModal}
-         className="rounded-md bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus-visible:ring-2 w-36 focus-visible:ring-white/75"
         >
           Red
         </button>
