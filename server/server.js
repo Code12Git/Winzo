@@ -20,7 +20,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Applying middleware
-const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const allowedOrigins = [
+	"https://colorbet.onrender.com",
+	"http://localhost:3000",
+];
 app.use(
 	cors({
 		origin: function (origin, callback) {
