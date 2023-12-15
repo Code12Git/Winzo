@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js", 
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "postgresql://betmaster:Saksham28saxena@database-1.cz7fegckv6ix.ap-south-1.rds.amazonaws.com:5432/Betting?schema=public" 
+  }
+}
