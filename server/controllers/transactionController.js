@@ -3,7 +3,7 @@ import prisma from "../db/conn.js";
 // Create Transaction
 export const createTransaction = async (req, res) => {
 	const { deposit, transactionId, withdrawal, betAmount } = req.body;
-	const MIN_DEPOSIT_AMOUNT = 300;
+	const MIN_DEPOSIT_AMOUNT = 500;
 
 	try {
 		if (!deposit || !transactionId) {
@@ -15,7 +15,7 @@ export const createTransaction = async (req, res) => {
 
 		if (deposit < MIN_DEPOSIT_AMOUNT) {
 			return res.status(400).json({
-				message: "Deposit amount should not be less than 300.",
+				message: "Deposit amount should not be less than 500.",
 				success: false,
 			});
 		}

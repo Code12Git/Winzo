@@ -8,7 +8,7 @@ const Dashboard = () => {
 			<div className="w-full h-screen p-4 sm:p-8 md:p-12 lg:p-16 xl:p-20">
 			<Balance />
 			<ColorBet />
-				<Timer />
+			<Timer />
 			</div>
 		</div>
 	);

@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { privateRequest } from '../../helpers/axios';
 import toast from 'react-hot-toast'
+
 export default function BlueModal() {
 
 
@@ -63,17 +64,56 @@ export default function BlueModal() {
     });
    
       setIsOpen(false)
-
-     
+     toast.success('Bet placed Successfully!');
+customToast(betAmount, selectedColor, toast);
+  
     
-    toast.success('Bet placed Successfully!')
-        await privateRequest.get('/bet'); // Assuming the endpoint for getting the latest bet is '/bet'
+        await privateRequest.get('/bet'); 
 
   } catch (error) {
     console.error('Submission Error:', error.response);
     toast.error(error.response.data.message);
   } 
 };
+function customToast(betAmount, selectedColor, toast) {
+  toast.custom((t) => (
+    <div
+      className={`${
+        t.visible ? 'animate-enter' : 'animate-leave'
+      } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+    >
+      <div className="flex-1 p-4">
+        <div className="flex items-start">
+          <div className="flex-shrink-0">
+            <img
+              className="h-12 w-12 rounded-full"
+              src="https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?w=826&t=st=1702673402~exp=1702674002~hmac=8f27ce8eab1527fd274e1a0e0ce6dc14e553d63d877fb945e405b14893ed11b9"
+              alt=""
+            />
+          </div>
+          <div className="ml-4">
+            <p className="text-base font-medium text-gray-900">
+              Amount Placed: {betAmount}
+            </p>
+            <p className="mt-1 text-sm text-gray-500">
+              Color: {selectedColor}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center">
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          className="border-l border-gray-200 px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  ), { duration: 20000 }); 
+}
+
+
 
 
   return (

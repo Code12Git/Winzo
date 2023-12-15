@@ -46,7 +46,7 @@ const Withdrawal = () => {
 					<input
 						className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="money"
-						type="text"
+						type="number"
 						placeholder="How much would you like to withdraw?"
 						value={withdrawalAmount}
 						onChange={(e) => setWithdrawalAmount(e.target.value)}
@@ -64,7 +64,7 @@ const Withdrawal = () => {
 						id="bankName"
 						type="text"
 						placeholder="Enter Bank Name"
-						value={bankName}
+					value={bankName}
 						onChange={(e) => setBankName(e.target.value)}
 					/>
 				</div>
@@ -94,7 +94,7 @@ const Withdrawal = () => {
 					<input
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						id="accountNumber"
-						type="text"
+						type="number"
 						value={accountNumber}
 						onChange={(e) => setAccountNumber(e.target.value)}
 						placeholder="Enter Account Number"

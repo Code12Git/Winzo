@@ -35,9 +35,9 @@ const Transaction = () => {
       return;
     }
 
-    if (transaction.deposit < 300) {
-      toast.error("Deposit amount cannot be less than 300");
-      return;
+    if (transaction.deposit < 500) {
+      toast.error("Deposit amount cannot be less than 500");
+     return;
     }
 
     if (!file) {
@@ -71,7 +71,7 @@ const Transaction = () => {
 				<div className="flex flex-col gap-2">
 					<label className="font-bold">Transaction Id-:</label>
 					<input
-						className="p-2 border border-black font-bold rounded-lg"
+					className="p-2 border border-black font-bold rounded-lg"
 						type="text"
 						name="transactionId"
 						onChange={inputChangeHandler}
@@ -110,7 +110,7 @@ const Transaction = () => {
 				>
 					<label
 						htmlFor="file"
-						className="file-input-label cursor-pointer hover:text-red-400"
+						className="file-input-label cursor-pointer hover:text-red-400 font-bold text-xl"
 					>
 						Add Screeshot
 						<input

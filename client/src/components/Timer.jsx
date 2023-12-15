@@ -68,7 +68,7 @@ useEffect(() => {
   const fetchRemainingTime = async () => {
     try {
       const response = await publicRequest.get('/session/remaining');
-      const data = response.data;
+     const data = response.data;
       const formattedTime = data.remainingTime;
 
       const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
@@ -126,8 +126,8 @@ const user = JSON.parse(localStorage.getItem('user'));
 
   return (
     <>
-      <div className='p-8 flex flex-col items-center justify-between md:flex-row'>
-        <div className='mb-8 md:mr-4 text-center'>
+      <div className='p-4 flex flex-col items-center justify-between gap-4 md:flex-row'>
+        <div className='flex flex-col gap-2 items-center'>
           <h1 className='text-4xl font-bold mb-2 text-blue-800'>
             <i className='fas fa-cube mr-2 text-blue-500'>Session</i>
           </h1>
@@ -138,7 +138,7 @@ const user = JSON.parse(localStorage.getItem('user'));
     onClose={() => setShowModal(false)}
     show={showModal}
   />}
-        <div className='text-center'>
+        <div className='flex flex-col gap-2 items-center'>
           <h1 className='text-4xl font-bold mb-2 text-yellow-800'>Count Down</h1>
           <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
       <div className={`flex flex-col ${isRed ? 'text-red-600' : 'text-black'}`}>
