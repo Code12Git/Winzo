@@ -22,7 +22,7 @@ const port = process.env.PORT || 3000;
 // Applying middleware
 const allowedOrigins = [
 	"https://colorbet.onrender.com",
-	"http://localhost:3000",
+	"https://admin-lac-five.vercel.app",
 ];
 app.use(
 	cors({
