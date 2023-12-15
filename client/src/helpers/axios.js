@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:7000/api";
+const BASE_URL = "https://colorbetbackend.onrender.com/api";
 
 let token = localStorage.getItem("token");
 
