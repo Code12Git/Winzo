@@ -18,9 +18,7 @@ const Header = () => {
 		<div className="navbar z-10 bg-gray-900">
 			<div className="flex-1">
 				<TopDrawer />
-				<a className="btn btn-ghost normal-case text-xl text-white">
-					BetMaster
-				</a>
+				<a className="btn btn-ghost normal-case text-xl text-white">ColorBet</a>
 			</div>
 			<div className="flex gap-4 text-white">
 				{isLoggedIn ? (
