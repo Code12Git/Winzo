@@ -35,7 +35,7 @@ export const getRemainingTime = () => {
 	const currentTime = Date.now();
 	const timeSinceLastExecution = currentTime - lastIntervalExecution;
 	const remainingTime = 180000 - timeSinceLastExecution;
-	return remainingTime;
+	return remainingTime > 0 ? remainingTime : 0; // Ensure remaining time is non-negative
 };
 
 const formatCountdown = (milliseconds) => {

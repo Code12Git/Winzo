@@ -1,127 +1,104 @@
-import  { useState, useEffect,useRef } from 'react';
+import  { useState, useEffect} from 'react';
 import { privateRequest, publicRequest } from '../helpers/axios';
 import BetResultModal from './modals/BetResultModel';
+import io from "socket.io-client";
 
 const Timer = () => {
-  const [latestSession, setLatestSession] = useState('');
-  const [session, setSession] = useState([]);
- 
-const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
-  const [isRed, setIsRed] = useState(false);
-  const countdownIntervalRef = useRef(null); 
-  const[latestBetDetails,setLatestBetDetails] = useState(null)
-  const [showModal, setShowModal] = useState(false);
-    
-    
+ const [latestSession, setLatestSession] = useState('');
+const [session, setSession] = useState([]);
+const [countdown, setCountdown] = useState({ minutes: 3, seconds: 0 });
+const [isRed, setIsRed] = useState(false);
+const [latestBetDetails, setLatestBetDetails] = useState(null);
+const [showModal, setShowModal] = useState(false);
 
- const startCountdown = ({ minutes, seconds }) => {
-  let remainingSeconds = minutes * 60 + seconds;
-  clearInterval(countdownIntervalRef.current); 
+const fetchAllSession = async () => {
+  try {
+    const sessionData = await publicRequest.get('/session');
+    setSession(sessionData.data);
+  } catch (error) {
+    console.error('Error fetching session:', error);
+  }
+};
 
-  countdownIntervalRef.current = setInterval(() => {
-    if (remainingSeconds > 0) {
-      const mins = Math.floor(remainingSeconds / 60);
-      const secs = remainingSeconds % 60;
+const fetchLatestSession = async () => {
+  try {
+    const sessionData = await publicRequest.get('/session/latest-session');
+    setLatestSession(sessionData.data.latestSessionId);
+    console.log(latestSession)
+  } catch (error) {
+    console.error('Error fetching latest session:', error);
+  }
+};
 
-      setCountdown({ minutes: mins, seconds: secs });
+const getSessionDetails = async () => {
+  try {
+    const response = await privateRequest.get('/bet');
+    if (response.data.success === false && response.data.message === "User has not placed a bet for the latest session") {
+      setLatestBetDetails(null);
+      console.log(latestBetDetails)
+    } else {
+      setLatestBetDetails(response.data.latestBet);
+    }
+  } catch (error) {
+    setLatestBetDetails(null);
+  }
+};
 
-      if (remainingSeconds === 30) {
-        fetchLatestSession();
-        fetchAllSession();
-        setShowModal(true);
+useEffect(() => {
+  const socket = io("http://localhost:7000");
 
-        setIsRed(true);
-      } else if (remainingSeconds <= 30 && remainingSeconds > 0) {
-        setIsRed(true);
-      } else {
-        setIsRed(false);
-      }
+  const handleRemainingTime = ({ remainingTime }) => {
+    const minutes = Math.floor(remainingTime / 60000);
+    const seconds = Math.floor((remainingTime % 60000) / 1000);
+    setCountdown({ minutes, seconds });
 
-      remainingSeconds--; 
+    if (minutes === 0 && seconds >= 0 && seconds <= 30) {
+      setIsRed(true);
     } else {
       setIsRed(false);
-      clearInterval(countdownIntervalRef.current);
-      fetchRemainingTime();
     }
-  }, 1000);
-};
+
+    if (minutes === 0 && seconds >= 30 && seconds <= 33) {
+      setShowModal(true);
+    } else {
+      setShowModal(false);
+    }
+  };
+
+  socket.on("remainingTime", handleRemainingTime);
+
+  return () => {
+    socket.off("remainingTime", handleRemainingTime);
+    socket.disconnect();
+  };
+}, []);
+
 useEffect(() => {
-  if (countdown.seconds === 33 && countdown.minutes === 0) {
-    getSessionDetails();
+  if (countdown.minutes === 0 && countdown.seconds === 33) {
+    fetchLatestSessionAndAll();
   }
 }, [countdown]);
 
-
-  const getSessionDetails=async()=>{
-  try{
-    const response=await privateRequest.get('/bet');
-   if (response.data.success === false && response.data.message === "User has not placed a bet for the latest session") {
-  setLatestBetDetails(null);
-} else {
-  setLatestBetDetails(response.data.latestBet);
-}
-  }catch (error) {
-    setLatestBetDetails(null)
-  }
-}
-
-  const fetchRemainingTime = async () => {
-    try {
-      const response = await publicRequest.get('/session/remaining');
-     const data = response.data;
-      const formattedTime = data.remainingTime;
-
-      const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
-      if (timeParts && timeParts.length === 3) {
-        const minutes = parseInt(timeParts[1]);
-        const seconds = parseInt(timeParts[2]);
-        setCountdown({ minutes, seconds });
-        startCountdown({ minutes, seconds });
-      }
-    } catch (error) {
-      console.error('Error fetching remaining time:', error);
-    }
-  };
-
-  const fetchAllSession = async () => {
-    try {
-      const sessionData = await publicRequest.get('/session');
-      setSession(sessionData.data);
-    } catch (error) {
-      console.error('Error fetching session:', error);
-    }
-  };
-
-const fetchLatestSession = async () => {
-    try {
-      const sessionData = await publicRequest.get('/session/latest-session');
-      setLatestSession(sessionData.data.latestSessionId);
-    } catch (error) {
-      console.error('Error fetching session:', error);
-    }
-  };
-
-   useEffect(() => {
   
+
+const fetchLatestSessionAndAll = async () => {
+  try {
+    await Promise.all([fetchLatestSession(), fetchAllSession()]);
+    getSessionDetails();
+  } catch (error) {
+    console.error('Error fetching latest session and all sessions:', error);
+  }
+};
+
+useEffect(() => {
+  fetchAllSession();
   fetchLatestSession();
-  fetchAllSession()
-  getSessionDetails()
-}, []); 
+  getSessionDetails();
+}, []);
 
-  useEffect(() => {
-    fetchRemainingTime(); 
-   const fetchInterval = setInterval(() => {
-      fetchRemainingTime();
-    }, 3 * 60 * 1000);
-    return () => {
-      clearInterval(countdownIntervalRef.current);
-            clearInterval(fetchInterval); 
-
-    };
-  }, []);
 const lastThreeSessions = session?.slice(-5).reverse();
-
 const user = JSON.parse(localStorage.getItem('user'));
+
 
 
   return (

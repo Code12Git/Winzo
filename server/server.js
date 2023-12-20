@@ -10,31 +10,26 @@ import qrRoute from "./routes/qr.js";
 import transactionRoute from "./routes/transaction.js";
 import screenshotRoute from "./routes/screenshot.js";
 import withdrawRoute from "./routes/withdraw.js";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import {
+	getRemainingTime,
+	remainingTime,
+} from "./controllers/SessionController.js";
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
 
 // Creating an instance of the Express app
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
 // Defining the port for the server to listen on
 const port = process.env.PORT || 3000;
 
 // Applying middleware
-const allowedOrigins = [
-	"https://colorbetadmin.vercel.app",
-	"https://colorbet.vercel.app",
-];
-app.use(
-	cors({
-		origin: function (origin, callback) {
-			if (!origin || allowedOrigins.includes(origin)) {
-				callback(null, true);
-			} else {
-				callback(new Error("Not allowed by CORS"));
-			}
-		},
-	})
-);
+
+app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoute);
@@ -51,7 +46,23 @@ app.get("/", (req, res) => {
 	res.status(200).json("Working!");
 });
 
+io.on("connection", (socket) => {
+	console.log("A user connected");
+
+	// When a user connects, send the remaining time to the client
+	const sendRemainingTime = () => {
+		const remainingTime = getRemainingTime();
+		io.emit("remainingTime", { remainingTime });
+	};
+	console.log(remainingTime);
+	const interval = setInterval(sendRemainingTime, 1000);
+	// Handle disconnect event
+	socket.on("disconnect", () => {
+		console.log("User disconnected");
+		clearInterval(interval);
+	});
+});
 // Starting the server and listen on the specified port
-app.listen(port, () => {
+server.listen(port, () => {
 	console.log(`🚀 Server is up on PORT: ${port}`);
 });

@@ -18,7 +18,7 @@ const handleLogout = () => {
       <div className="p-6 w-72 font-bold text-white space-y-4 md:space-y-10">
         <div className="text-2xl md:text-3xl flex flex-col gap-4 md:gap-8">
           <p className="bg-gradient-to-r from-orange-500 via-red-400 to-blue-400 text-transparent bg-clip-text text-3xl">
-            BetMaster
+           ColorBet
           </p>
 
           {SidebarLinks.map((item) => (

@@ -1,10 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Fragment, useState,useEffect } from 'react'
 import { privateRequest} from '../../helpers/axios';
 import toast from 'react-hot-toast'
 export default function RedModal() {
 
   const [isOpen, setIsOpen] = useState(false)
+  const [betPlaced, setBetPlaced] = useState(false);
 
   const [betAmount, setBetAmount] = useState(100);
   const [selectedColor, setSelectedColor] = useState('red');
@@ -59,14 +60,36 @@ export default function RedModal() {
 
     toast.success('Bet placed Successfully!');
     customToast(betAmount, selectedColor, toast);
-
-        await privateRequest.get('/bet'); 
+    await privateRequest.get('/bet'); 
+    setBetPlaced(prevState => !prevState);
 
   } catch (error) {
     console.error('Submission Error:', error);
-    toast.error(error.message);
+   toast.error(error.response.data.message);
   }
 };
+
+  useEffect(() => {
+  // Your logic to run after a bet is placed...
+  // This useEffect will be triggered whenever betPlaced changes
+
+  // For instance, if you want to fetch updated bet data after placing a bet
+  const fetchData = async () => {
+    try {
+     const response= await privateRequest.get('/bet');
+     console.log(response)
+      // Process the response data as needed
+    } catch (error) {
+      console.error('Error fetching bet data:', error);
+    }
+  };
+
+  if (betPlaced) {
+    fetchData(); // Call the function when betPlaced changes
+  }
+}, [betPlaced]);
+
+
 function customToast(betAmount, selectedColor, toast) {
   toast.custom((t) => (
     <div

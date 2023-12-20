@@ -1,6 +1,7 @@
 import {useEffect,useState} from "react";
 import { motion } from "framer-motion";
 import { privateRequest } from "../helpers/axios";
+import { NavLink } from "react-router-dom";
 
 const Balance = () => {
   const [balance, setBalance] = useState(
@@ -42,8 +43,8 @@ useEffect(() => {
           whileTap={{ scale: 0.8 }}
          className="bg-green-500 mt-4 md:mt-0 lg:mt-0 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
        >
-          Telegram
-        </motion.div>
+        <NavLink to='/help'>Username Id</NavLink> 
+       </motion.div>
       </div>
     </div>
   </div>
