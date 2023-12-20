@@ -10,11 +10,11 @@ datasource db {
 }
 
 model User {
-  id               Int           @id @default(autoincrement())
+  id               Int              @id @default(autoincrement())
   name             String?
-  phone            String        @unique
+  phone            String           @unique
   countryCode      String?
-  Role             Role          @default(User)
+  Role             Role             @default(User)
   password         String
   resetToken       String?
   resetTokenExpiry DateTime?
@@ -24,6 +24,7 @@ model User {
   balance          Int?
   amount           Int?
   BankAccount      BankAccount[]
+  UserModalState   UserModalState[]
 
   @@index([phone])
 }
@@ -96,4 +97,11 @@ model BankAccount {
   withdrawals       Withdrawal[]
   user              User         @relation(fields: [userId], references: [id])
   userId            Int
+}
+
+model UserModalState {
+  id     Int     @id @default(autoincrement())
+  userId Int     @unique
+  isOpen Boolean
+  User   User    @relation(fields: [userId], references: [id])
 }

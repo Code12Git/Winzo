@@ -10,26 +10,35 @@ import qrRoute from "./routes/qr.js";
 import transactionRoute from "./routes/transaction.js";
 import screenshotRoute from "./routes/screenshot.js";
 import withdrawRoute from "./routes/withdraw.js";
-import { Server } from "socket.io";
+import { Server as SocketIOServer } from "socket.io";
 import { createServer } from "http";
 import {
 	getRemainingTime,
 	remainingTime,
 } from "./controllers/SessionController.js";
+import modalRoute from "./routes/modal.js";
+
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
 
-// Creating an instance of the Express app
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new SocketIOServer(server, {
+	cors: {
+		origin: "http://43.205.144.160:3001",
+		methods: ["GET", "POST"],
+		credentials: true,
+	},
+});
+app.use(
+	cors({
+		origin: "http://43.205.144.160:3001",
+		methods: ["GET", "POST"],
+		credentials: true,
+	})
+);
 
-// Defining the port for the server to listen on
 const port = process.env.PORT || 3000;
-
-// Applying middleware
-
-app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoute);
@@ -41,24 +50,24 @@ app.use("/api/qr", qrRoute);
 app.use("/api/transaction", transactionRoute);
 app.use("/api/screenshot", screenshotRoute);
 app.use("/api/withdraw", withdrawRoute);
-// Testing route to check if the server is working
+app.use("/api/modal", modalRoute);
+
 app.get("/", (req, res) => {
 	res.status(200).json("Working!");
 });
 
 io.on("connection", (socket) => {
-	// When a user connects, send the remaining time to the client
 	const sendRemainingTime = () => {
 		const remainingTime = getRemainingTime();
 		io.emit("remainingTime", { remainingTime });
 	};
 	const interval = setInterval(sendRemainingTime, 1000);
-	// Handle disconnect event
+
 	socket.on("disconnect", () => {
 		clearInterval(interval);
 	});
 });
-// Starting the server and listen on the specified port
+
 server.listen(port, () => {
 	console.log(`🚀 Server is up on PORT: ${port}`);
 });
