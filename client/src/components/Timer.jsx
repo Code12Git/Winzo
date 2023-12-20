@@ -6,7 +6,7 @@ import io from "socket.io-client";
 const Timer = () => {
  const [latestSession, setLatestSession] = useState('');
 const [session, setSession] = useState([]);
-const [countdown, setCountdown] = useState({ minutes: 3, seconds: 0 });
+const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 const [isRed, setIsRed] = useState(false);
 const [latestBetDetails, setLatestBetDetails] = useState(null);
 const [showModal, setShowModal] = useState(false);
@@ -24,44 +24,40 @@ const fetchLatestSession = async () => {
   try {
     const sessionData = await publicRequest.get('/session/latest-session');
     setLatestSession(sessionData.data.latestSessionId);
-    console.log(latestSession)
   } catch (error) {
     console.error('Error fetching latest session:', error);
   }
 };
 
-const getSessionDetails = async () => {
-  try {
-    const response = await privateRequest.get('/bet');
-    if (response.data.success === false && response.data.message === "User has not placed a bet for the latest session") {
-      setLatestBetDetails(null);
-      console.log(latestBetDetails)
-    } else {
-      setLatestBetDetails(response.data.latestBet);
-    }
-  } catch (error) {
-    setLatestBetDetails(null);
-  }
-};
+
 
 useEffect(() => {
   const socket = io("http://localhost:7000");
+
+  let modalOpen = false; // Track if modal is open
 
   const handleRemainingTime = ({ remainingTime }) => {
     const minutes = Math.floor(remainingTime / 60000);
     const seconds = Math.floor((remainingTime % 60000) / 1000);
     setCountdown({ minutes, seconds });
 
-    if (minutes === 0 && seconds >= 0 && seconds <= 30) {
+    if (minutes === 0 && seconds >= 27 && seconds <= 30) {
+      
+      fetchLatestSessionAndAll();
+    } else if(minutes === 0 &&  seconds <= 30){
       setIsRed(true);
     } else {
       setIsRed(false);
     }
 
     if (minutes === 0 && seconds >= 30 && seconds <= 33) {
+      getSessionDetails();
+    }
+
+    // Open the modal when it's triggered at 0 minutes and 30 seconds
+    if (minutes === 0 && seconds === 30 && !modalOpen) {
       setShowModal(true);
-    } else {
-      setShowModal(false);
+      modalOpen = true; // Set modalOpen flag to true to prevent closing
     }
   };
 
@@ -73,26 +69,33 @@ useEffect(() => {
   };
 }, []);
 
-useEffect(() => {
-  if (countdown.minutes === 0 && countdown.seconds === 33) {
-    fetchLatestSessionAndAll();
-  }
-}, [countdown]);
 
   
 
 const fetchLatestSessionAndAll = async () => {
   try {
-    await Promise.all([fetchLatestSession(), fetchAllSession()]);
-    getSessionDetails();
+    await fetchLatestSession();
+    await fetchAllSession();
   } catch (error) {
-    console.error('Error fetching latest session and all sessions:', error);
+// 
+  }
+};
+
+const getSessionDetails = async () => {
+  try {
+    const response = await privateRequest.get('/bet');
+    if (response.data.success === false && response.data.message === "User has not placed a bet for the latest session") {
+      setLatestBetDetails(null);
+    } else {
+      setLatestBetDetails(response.data.latestBet);
+    }
+  } catch (error) {
+    setLatestBetDetails(null);
   }
 };
 
 useEffect(() => {
-  fetchAllSession();
-  fetchLatestSession();
+  fetchLatestSessionAndAll();
   getSessionDetails();
 }, []);
 

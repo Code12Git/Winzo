@@ -47,18 +47,14 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-	console.log("A user connected");
-
 	// When a user connects, send the remaining time to the client
 	const sendRemainingTime = () => {
 		const remainingTime = getRemainingTime();
 		io.emit("remainingTime", { remainingTime });
 	};
-	console.log(remainingTime);
 	const interval = setInterval(sendRemainingTime, 1000);
 	// Handle disconnect event
 	socket.on("disconnect", () => {
-		console.log("User disconnected");
 		clearInterval(interval);
 	});
 });

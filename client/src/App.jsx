@@ -11,7 +11,7 @@ function App() {
 		<div>
 			<Toaster />
 		<Navbar />
-			<Routes>
+		<Routes>
 				<Route path="/" element={<Dashboard />} />
 				<Route path="/transaction" element={<Transaction />} />
 			<Route path="/withdrawal" element={<Withdrawal />} />
