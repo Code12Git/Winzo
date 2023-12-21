@@ -12,7 +12,6 @@ const [isRed, setIsRed] = useState(false);
 const [latestBetDetails, setLatestBetDetails] = useState(null);
 const [showModal, setShowModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [toastRendered, setToastRendered] = useState(false); 
 
 const fetchAllSession = async () => {
   try {
@@ -52,30 +51,31 @@ useEffect(() => {
 };
 
 
-  const handleRemainingTime = ({ remainingTime }) => {
-    const minutes = Math.floor(remainingTime / 60000);
-    const seconds = Math.floor((remainingTime % 60000) / 1000);
-    setCountdown({ minutes, seconds });
+ const handleRemainingTime = ({ remainingTime }) => {
+  const minutes = Math.floor(remainingTime / 60000);
+  const seconds = Math.floor((remainingTime % 60000) / 1000);
+  setCountdown({ minutes, seconds });
 
-    if (minutes === 0 && seconds >= 28 && seconds <= 30) {
-      fetchModalState();
+  if (minutes === 0 && seconds >= 28 && seconds <= 30) {
+    fetchModalState();
+    fetchLatestSessionAndAll();
+  }
 
-      fetchLatestSessionAndAll();
-     
-    }if (minutes === 0 && seconds === 26 && !toastRendered) {
-      setToastRendered(true);
-      setShowToast(true);
-      } else if (minutes !== 0 && seconds !== 26) {
-        setToastRendered(false);
-      }  else if (minutes === 0 && seconds <= 30) {
-      setIsRed(true);
-    } else {
-      setIsRed(false);
+  if (minutes === 0 && seconds === 26 && !showToast) {
+    setShowToast(true);
+  } else if (seconds !== 26) {
+      setShowToast(false);
     }
 
-    if (minutes === 0 && seconds >= 28 && seconds <= 33) {
-      getSessionDetails();
-    }
+  if (minutes === 0 && seconds <= 30) {
+    setIsRed(true);
+  } else {
+    setIsRed(false);
+  }
+
+  if (minutes === 0 && seconds >= 28 && seconds <= 33) {
+    getSessionDetails();
+  }
   
 
    
@@ -87,9 +87,8 @@ useEffect(() => {
     socket.off("remainingTime", handleRemainingTime);
     socket.disconnect();
   };
-},  [toastRendered]);
-console.log('showToast:', showToast);
-console.log('latestBetDetails:', latestBetDetails);
+},  []);
+
 
 
 
@@ -144,10 +143,9 @@ const user = JSON.parse(localStorage.getItem('user'));
     onClose={() => setShowModal(false)}
     show={showModal}
   />}
-   {user && showToast && (
+   {user &&  (
         <CustomToast
           latestBetDetails={latestBetDetails}
-          onHideToast={() => setShowToast(false)}
           showToast={showToast}
         />
       )}

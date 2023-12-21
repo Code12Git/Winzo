@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 
 const CustomToast = ({ latestBetDetails, showToast }) => {
-  useEffect(() => {
-    let toastId = null;
+  const [toastId, setToastId] = useState(null);
 
+  useEffect(() => {
     if (showToast && latestBetDetails !== null && toastId === null) {
-      toastId = toast.custom((t) => (
+   const   id= toast.custom((t) => (
         <div
           className={`${
             t.visible ? 'animate-enter' : 'animate-leave'
@@ -49,7 +49,6 @@ const CustomToast = ({ latestBetDetails, showToast }) => {
             <button
               onClick={() => {
                 toast.dismiss(toastId);
-                toastId = null;
               }}
               className="border-l border-gray-200 px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
@@ -58,17 +57,17 @@ const CustomToast = ({ latestBetDetails, showToast }) => {
           </div>
         </div>
       ));
+            setToastId(id);
+
     }
 
-    return () => {
-      if (toastId !== null) {
-        toast.dismiss(toastId);
-        toastId = null;
-      }
-    };
-  }, [showToast, latestBetDetails]);
+   else if (!showToast && toastId !== null) {
+      toast.dismiss(toastId);
+      setToastId(null);
+    }
+  }, [showToast, latestBetDetails,toastId]);
 
-  return null; // Return null as the toast is triggered through the useEffect
+  return null
 };
 
 CustomToast.propTypes = {
