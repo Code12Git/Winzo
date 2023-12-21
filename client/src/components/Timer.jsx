@@ -2,6 +2,7 @@ import  { useState, useEffect} from 'react';
 import { privateRequest, publicRequest } from '../helpers/axios';
 import BetResultModal from './modals/BetResultModel';
 import io from "socket.io-client";
+import CustomToast from './common/CustomToast';
 
 const Timer = () => {
  const [latestSession, setLatestSession] = useState('');
@@ -10,6 +11,8 @@ const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 const [isRed, setIsRed] = useState(false);
 const [latestBetDetails, setLatestBetDetails] = useState(null);
 const [showModal, setShowModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastRendered, setToastRendered] = useState(false); 
 
 const fetchAllSession = async () => {
   try {
@@ -34,31 +37,48 @@ const fetchLatestSession = async () => {
 useEffect(() => {
   const socket = io("http://localhost:7000");
 
-  let modalOpen = false; // Track if modal is open
+  const fetchModalState = async () => {
+  try {
+    const res = await privateRequest.get('/modal/usermodalstate');
+    if (res.data && res.data.success === true) {
+      if (res.data.data.isOpen) {
+        console.log(res.data.data.isOpen);
+        setShowModal(true);
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching modal state:', err);
+  }
+};
+
 
   const handleRemainingTime = ({ remainingTime }) => {
     const minutes = Math.floor(remainingTime / 60000);
     const seconds = Math.floor((remainingTime % 60000) / 1000);
     setCountdown({ minutes, seconds });
 
-    if (minutes === 0 && seconds >= 27 && seconds <= 30) {
-      
+    if (minutes === 0 && seconds >= 28 && seconds <= 30) {
+      fetchModalState();
+
       fetchLatestSessionAndAll();
-    } else if(minutes === 0 &&  seconds <= 30){
+     
+    }if (minutes === 0 && seconds === 26 && !toastRendered) {
+      setToastRendered(true);
+      setShowToast(true);
+      } else if (minutes !== 0 && seconds !== 26) {
+        setToastRendered(false);
+      }  else if (minutes === 0 && seconds <= 30) {
       setIsRed(true);
     } else {
       setIsRed(false);
     }
 
-    if (minutes === 0 && seconds >= 30 && seconds <= 33) {
+    if (minutes === 0 && seconds >= 28 && seconds <= 33) {
       getSessionDetails();
     }
+  
 
-    // Open the modal when it's triggered at 0 minutes and 30 seconds
-    if (minutes === 0 && seconds === 30 && !modalOpen) {
-      setShowModal(true);
-      modalOpen = true; // Set modalOpen flag to true to prevent closing
-    }
+   
   };
 
   socket.on("remainingTime", handleRemainingTime);
@@ -67,10 +87,11 @@ useEffect(() => {
     socket.off("remainingTime", handleRemainingTime);
     socket.disconnect();
   };
-}, []);
+},  [toastRendered]);
+console.log('showToast:', showToast);
+console.log('latestBetDetails:', latestBetDetails);
 
 
-  
 
 const fetchLatestSessionAndAll = async () => {
   try {
@@ -99,6 +120,10 @@ useEffect(() => {
   getSessionDetails();
 }, []);
 
+
+
+
+
 const lastThreeSessions = session?.slice(-5).reverse();
 const user = JSON.parse(localStorage.getItem('user'));
 
@@ -107,6 +132,7 @@ const user = JSON.parse(localStorage.getItem('user'));
   return (
     <>
       <div className='p-4 flex flex-col items-center justify-between gap-4 md:flex-row'>
+        
         <div className='flex flex-col gap-2 items-center'>
           <h1 className='text-4xl font-bold mb-2 text-blue-800'>
             <i className='fas fa-cube mr-2 text-blue-500'>Session</i>
@@ -118,6 +144,13 @@ const user = JSON.parse(localStorage.getItem('user'));
     onClose={() => setShowModal(false)}
     show={showModal}
   />}
+   {user && showToast && (
+        <CustomToast
+          latestBetDetails={latestBetDetails}
+          onHideToast={() => setShowToast(false)}
+          showToast={showToast}
+        />
+      )}
         <div className='flex flex-col gap-2 items-center'>
           <h1 className='text-4xl font-bold mb-2 text-yellow-800'>Count Down</h1>
           <div className="grid grid-flow-col gap-5 text-center auto-cols-max">

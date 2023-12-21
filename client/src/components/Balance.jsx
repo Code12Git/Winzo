@@ -53,6 +53,7 @@ const fetchBalance = async () => {
           // Error
         }
       };
+      
  
 useEffect(()=>{
   fetchBalance()

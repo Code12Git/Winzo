@@ -23,24 +23,11 @@ dotenv.config({ path: "./.env" });
 
 const app = express();
 const server = createServer(app);
-const io = new SocketIOServer(server, {
-	cors: {
-		origin: "http://43.205.144.160:3001",
-		methods: ["GET", "POST"],
-		credentials: true,
-	},
-});
-app.use(
-	cors({
-		origin: "http://43.205.144.160:3001",
-		methods: ["GET", "POST"],
-		credentials: true,
-	})
-);
+const io = new SocketIOServer(server);
 
 const port = process.env.PORT || 3000;
 app.use(express.json());
-
+app.use(cors());
 app.use("/api/auth", authRoute);
 app.use("/api", forgotRoute);
 app.use("/api/superadmin", SuperadminRoute);
