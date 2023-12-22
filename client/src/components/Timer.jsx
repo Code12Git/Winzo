@@ -18,7 +18,7 @@ const fetchAllSession = async () => {
     const sessionData = await publicRequest.get('/session');
     setSession(sessionData.data);
   } catch (error) {
-    console.error('Error fetching session:', error);
+// 
   }
 };
 
@@ -27,7 +27,7 @@ const fetchLatestSession = async () => {
     const sessionData = await publicRequest.get('/session/latest-session');
     setLatestSession(sessionData.data.latestSessionId);
   } catch (error) {
-    console.error('Error fetching latest session:', error);
+    console.error('Error fetching latest session:');
   }
 };
 
@@ -41,12 +41,11 @@ useEffect(() => {
     const res = await privateRequest.get('/modal/usermodalstate');
     if (res.data && res.data.success === true) {
       if (res.data.data.isOpen) {
-        console.log(res.data.data.isOpen);
         setShowModal(true);
       }
     }
   } catch (err) {
-    console.error('Error fetching modal state:', err);
+// 
   }
 };
 
@@ -65,6 +64,7 @@ useEffect(() => {
     setShowToast(true);
   } else if (seconds !== 26) {
       setShowToast(false);
+      
     }
 
   if (minutes === 0 && seconds <= 30) {
@@ -73,7 +73,7 @@ useEffect(() => {
     setIsRed(false);
   }
 
-  if (minutes === 0 && seconds >= 28 && seconds <= 33) {
+  if (minutes === 0 && seconds >= 32 && seconds <= 33) {
     getSessionDetails();
   }
   
@@ -110,9 +110,16 @@ const getSessionDetails = async () => {
       setLatestBetDetails(response.data.latestBet);
     }
   } catch (error) {
-    setLatestBetDetails(null);
+    if (error.response && error.response.status === 404) {
+      setLatestBetDetails(null);
+    } else {
+      // Handle other errors and log to console
+      console.error('Error fetching bet details:', error);
+      // setLatestBetDetails(null); // You might choose to set to null or handle differently
+    }
   }
 };
+
 
 useEffect(() => {
   fetchLatestSessionAndAll();

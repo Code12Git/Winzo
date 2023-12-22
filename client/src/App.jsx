@@ -9,7 +9,9 @@ import Help from "./pages/Help";
 function App() {
 	return (
 		<div>
-			<Toaster />
+		<Toaster  toastOptions={{
+
+    duration: 5000}} />
 		<Navbar />
 		<Routes>
 				<Route path="/" element={<Dashboard />} />

@@ -62,7 +62,6 @@ export default function GreenModal() {
        await privateRequest.get('/bet'); 
 
   } catch (error) {
-    console.error('Submission Error:', error.response);
     toast.error(error.response.data.message);
   }
 };

@@ -18,7 +18,7 @@ function Navbar() {
       <div >
         <div className="flex flex-wrap justify-center gap-2 md:justify-between lg:justify-between items-center py-4 md:py-6">
           <div className="flex items-center space-x-3">
-            <SideDrawer />
+           <SideDrawer />
             <div className="flex items-center space-x-2">
               <img src="/logo.png" className="w-10" alt="colorBat" />
               <h1 className="text-lg lg:text-4xl font-bold font-serif">

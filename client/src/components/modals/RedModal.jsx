@@ -64,7 +64,6 @@ export default function RedModal() {
     setBetPlaced(prevState => !prevState);
 
   } catch (error) {
-    console.error('Submission Error:', error);
    toast.error(error.response.data.message);
   }
 };
@@ -76,12 +75,11 @@ export default function RedModal() {
   // For instance, if you want to fetch updated bet data after placing a bet
   const fetchData = async () => {
     try {
-     const response= await privateRequest.get('/bet');
-     console.log(response)
+    await privateRequest.get('/bet');
       // Process the response data as needed
     } catch (error) {
-      console.error('Error fetching bet data:', error);
-    }
+      // 
+   }
   };
 
   if (betPlaced) {
@@ -215,7 +213,7 @@ function customToast(betAmount, selectedColor, toast) {
       <div className="flex justify-between">
         <button onClick={handleDecrement}>-</button>
         <p>{betAmount}</p>
-        <button onClick={handleIncrement}>+</button>
+       <button onClick={handleIncrement}>+</button>
       </div>
                       
                     </div>
