@@ -1,28 +1,63 @@
 import {useEffect,useState} from "react";
 import { motion } from "framer-motion";
 import { privateRequest } from "../helpers/axios";
+import { NavLink } from "react-router-dom";
+import io from "socket.io-client";
 
 const Balance = () => {
   const [balance, setBalance] = useState(
 		null
 );
+
 useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const res = await privateRequest.get('/transaction/balance');
-        if (res.data && res.data.success === true) { 
-          setBalance(res.data.balance); 
+  const socket = io("http://localhost:7000");
+
+  const handleRemainingTime = ({ remainingTime }) => {
+    const minutes = Math.floor(remainingTime / 60000);
+    const seconds = Math.floor((remainingTime % 60000) / 1000);
+
+    if (minutes === 0 && seconds >= 27 && seconds <= 30) {
+      const fetchBalance = async () => {
+        try {
+          const res = await privateRequest.get('/transaction/balance');
+          if (res.data && res.data.success === true) { 
+            setBalance(res.data.balance); 
+          }
+        } catch (err) {
+          // Error
         }
-      } catch (err) {
-      console.error(err)
-      }
-    };
+      };
 
-   const interval = setInterval(fetchBalance, 60000); 
-    fetchBalance();
+      fetchBalance();
 
-    return () => clearInterval(interval);
-  }, []); 
+     
+
+    } 
+  };
+
+  socket.on("remainingTime", handleRemainingTime);
+
+  return () => {
+    socket.off("remainingTime", handleRemainingTime);
+    socket.disconnect();
+  };
+}, []);
+
+const fetchBalance = async () => {
+        try {
+          const res = await privateRequest.get('/transaction/balance');
+          if (res.data && res.data.success === true) { 
+            setBalance(res.data.balance); 
+          }
+        } catch (err) {
+          // Error
+        }
+      };
+      
+ 
+useEffect(()=>{
+  fetchBalance()
+})
 
 
 
@@ -42,8 +77,8 @@ useEffect(() => {
           whileTap={{ scale: 0.8 }}
          className="bg-green-500 mt-4 md:mt-0 lg:mt-0 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
        >
-          Telegram
-        </motion.div>
+       <NavLink to='/help'>Contact Us</NavLink> 
+       </motion.div>
       </div>
     </div>
   </div>

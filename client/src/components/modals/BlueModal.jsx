@@ -71,7 +71,6 @@ customToast(betAmount, selectedColor, toast);
         await privateRequest.get('/bet'); 
 
   } catch (error) {
-    console.error('Submission Error:', error.response);
     toast.error(error.response.data.message);
   } 
 };

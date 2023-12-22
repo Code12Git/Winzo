@@ -11,7 +11,7 @@ Modal.setAppElement('#root'); // Replace '#root' with your main app element's ID
 ReactDOM.createRoot(document.getElementById('root')).render(
  <React.StrictMode>
 		<BrowserRouter>
-			<App />
+		<App />
 		</BrowserRouter>
 	</React.StrictMode>
 )

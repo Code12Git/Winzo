@@ -10,33 +10,24 @@ import qrRoute from "./routes/qr.js";
 import transactionRoute from "./routes/transaction.js";
 import screenshotRoute from "./routes/screenshot.js";
 import withdrawRoute from "./routes/withdraw.js";
+import { Server as SocketIOServer } from "socket.io";
+import { createServer } from "http";
+import {
+	getRemainingTime,
+	remainingTime,
+} from "./controllers/SessionController.js";
+import modalRoute from "./routes/modal.js";
+
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
 
-// Creating an instance of the Express app
 const app = express();
+const server = createServer(app);
+const io = new SocketIOServer(server);
 
-// Defining the port for the server to listen on
 const port = process.env.PORT || 3000;
-
-// Applying middleware
-const allowedOrigins = [
-	"https://colorbetadmin.vercel.app",
-	"https://colorbet.vercel.app",
-];
-app.use(
-	cors({
-		origin: function (origin, callback) {
-			if (!origin || allowedOrigins.includes(origin)) {
-				callback(null, true);
-			} else {
-				callback(new Error("Not allowed by CORS"));
-			}
-		},
-	})
-);
 app.use(express.json());
-
+app.use(cors());
 app.use("/api/auth", authRoute);
 app.use("/api", forgotRoute);
 app.use("/api/superadmin", SuperadminRoute);
@@ -46,12 +37,24 @@ app.use("/api/qr", qrRoute);
 app.use("/api/transaction", transactionRoute);
 app.use("/api/screenshot", screenshotRoute);
 app.use("/api/withdraw", withdrawRoute);
-// Testing route to check if the server is working
+app.use("/api/modal", modalRoute);
+
 app.get("/", (req, res) => {
 	res.status(200).json("Working!");
 });
 
-// Starting the server and listen on the specified port
-app.listen(port, () => {
+io.on("connection", (socket) => {
+	const sendRemainingTime = () => {
+		const remainingTime = getRemainingTime();
+		io.emit("remainingTime", { remainingTime });
+	};
+	const interval = setInterval(sendRemainingTime, 1000);
+
+	socket.on("disconnect", () => {
+		clearInterval(interval);
+	});
+});
+
+server.listen(port, () => {
 	console.log(`🚀 Server is up on PORT: ${port}`);
 });

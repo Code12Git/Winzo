@@ -52,7 +52,7 @@ const Transaction = () => {
 
     await privateRequest.post("/transaction", transaction);
   } catch (error) {
-    console.error("Error uploading screenshot or transaction:", error);
+    toast.error("Error uploading screenshot or transaction");
   }
 };
 
