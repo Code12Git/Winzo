@@ -21,7 +21,6 @@ const UserCards = () => {
 		fetchUsers();
 	}, []);
 
-	console.log(users);
 	return (
 		<>
 			<Toaster />

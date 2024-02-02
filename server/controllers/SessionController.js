@@ -8,28 +8,45 @@ const specificSessions = [
 ];
 
 export const sessionUserBets = new Map();
-
 let adminCreatedSession = false;
 let lastIntervalExecution = Date.now();
-const createRandomSession = async () => {
-	const randomIndex = Math.floor(Math.random() * specificSessions.length);
-	const { color } = specificSessions[randomIndex];
-	const sessionIdentifier = `${color}`;
-	sessionUserBets.set(sessionIdentifier, new Set());
-	try {
-		const currentTime = new Date();
-		const session = await prisma.session.create({
-			data: {
-				color,
-				createdAt: currentTime,
-				startTime: new Date(currentTime.getTime() + 180000),
-			},
-		});
-		console.log(session);
-	} catch (err) {
-		console.error("Error creating random session:", err);
-	}
+let shuffledColors = [];
+
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 };
+
+const createRandomSession = async () => {
+  if (shuffledColors.length === 0) {
+    // Shuffle the array when all colors have been used
+    shuffledColors = [...specificSessions];
+    shuffleArray(shuffledColors);
+  }
+
+  const { color } = shuffledColors.pop(); // Pop the last color from the shuffled array
+
+  const sessionIdentifier = `${color}`;
+  sessionUserBets.set(sessionIdentifier, new Set());
+
+  try {
+    const currentTime = new Date();
+    const session = await prisma.session.create({
+      data: {
+        color,
+        createdAt: currentTime,
+        startTime: new Date(currentTime.getTime() + 180000),
+      },
+    });
+    console.log(session);
+  } catch (err) {
+    console.error("Error creating random session:", err);
+  }
+};
+
+
 
 export const getRemainingTime = () => {
 	const currentTime = Date.now();
@@ -184,7 +201,7 @@ export const getLatestSession = async (req, res) => {
 
 		let latestSessionId = "";
 
-		if (remainingTime <= 30000) {
+		if (remainingTime <= 10000) {
 			const latestSession = await prisma.session.findFirst({
 				orderBy: { createdAt: "desc" },
 			});

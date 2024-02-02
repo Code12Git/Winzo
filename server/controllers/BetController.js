@@ -2,7 +2,6 @@ import { updateUserBalanceController } from "./transactionController.js";
 import { getRemainingTime } from "./SessionController.js";
 import { sessionUserBets } from "./SessionController.js";
 import prisma from "../db/conn.js"; // Import Prisma instance
-
 // Create Bet Controller
 export const createBetController = async (req, res) => {
 	try {
@@ -118,6 +117,7 @@ export const createBetController = async (req, res) => {
 	}
 };
 
+
 // Get Bet Controller
 export const getBetController = async (req, res) => {
 	try {
@@ -170,6 +170,67 @@ export const getBetController = async (req, res) => {
 		return res.status(500).json({ success: false, error: error.message });
 	}
 };
+
+
+// Get Recent Bets
+export const getRecentBetsController = async (req, res) => {
+    try {
+        const loggedInUser = req.user;
+
+        if (!loggedInUser) {
+            return res.status(401).json({ success: false, message: "User not logged in" });
+        }
+
+        const timeThreshold = 32 * 1000;
+        const remainingTime = getRemainingTime();
+
+        // Fetch the latest bet
+        const latestBet = await prisma.bet.findFirst({
+            where: {
+                userId: loggedInUser.id,
+            },
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+            },
+        });
+
+        // Fetch recent bets excluding the latest bet
+        const recentBets = await prisma.bet.findMany({
+            where: {
+                userId: loggedInUser.id,
+                NOT: {
+                    id: latestBet?.id || null,
+                },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 10,
+            select: {
+                color: true,
+                betAmount: true,
+                payout: true,
+                isWinner: true,
+                createdAt: true,
+            },
+        });
+
+        if (!recentBets || recentBets.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No recent bets found for the user",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            recentBets,
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+
 
 // Get All Bet Controller
 export const getAllBetsController = async (req, res) => {

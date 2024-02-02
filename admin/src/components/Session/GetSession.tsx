@@ -1,25 +1,36 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { publicRequest, privateRequest } from "@/helpers/axios";
 import { Session } from "@/types/types";
 import CreateSession from "./CreateSession";
 import UpdateSession from "./UpdateSession";
 import toast from "react-hot-toast";
-import Countdown from "./Countdown";
 const GetSession = () => {
 	const [sessions, setSessions] = useState<Session[]>([]);
 
-	useEffect(() => {
-		fetchAllSession();
-	}, []);
-	const fetchAllSession = async () => {
+	const fetchAllSession = useCallback(async () => {
 		try {
-			const sessionData = await publicRequest.get("/session/all ");
+			const sessionData = await publicRequest.get("/session/all");
 			setSessions(sessionData.data);
 		} catch (error) {
 			console.error("Error fetching session:", error);
 		}
-	};
+	}, []);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			await fetchAllSession();
+		};
+
+		fetchData();
+
+		let timeoutId = setTimeout(async () => {
+			await fetchAllSession();
+			clearTimeout(timeoutId);
+		}, 180000);
+
+		return () => clearTimeout(timeoutId);
+	}, [fetchAllSession]);
 
 	const getColorMarker = (color: string) => {
 		switch (color) {
@@ -47,7 +58,6 @@ const GetSession = () => {
 
 	return (
 		<>
-			<Countdown fetchSession={fetchAllSession} />
 			<CreateSession />
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-12">
 				{lastThreeSessions.slice(0, 3).map((session) => (

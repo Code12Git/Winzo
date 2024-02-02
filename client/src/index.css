@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 
-body,html{
+body,
+html {
     background-color: white;
+}
+
+html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
 }

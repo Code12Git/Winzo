@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { SiPaytm } from "react-icons/si";
 import DepositModal from "../components/modals/Deposit";
@@ -10,7 +10,6 @@ const Withdrawal = () => {
 	const [ifscCode, setIfscCode] = useState("");
 	const [showModal, setShowModal] = useState(false);
 
-	const [upiId, setUpiId] = useState("");
 	const handleWithdrawal = () => {
 		const amount = parseFloat(withdrawalAmount);
 
@@ -64,7 +63,7 @@ const Withdrawal = () => {
 						id="bankName"
 						type="text"
 						placeholder="Enter Bank Name"
-					value={bankName}
+						value={bankName}
 						onChange={(e) => setBankName(e.target.value)}
 					/>
 				</div>
@@ -116,26 +115,7 @@ const Withdrawal = () => {
 						placeholder="Enter  IFSC Code"
 					/>
 				</div>
-				{/* OR label */}
-				<h1 className="text-center mt-6 mb-4 text-gray-700 font-bold">OR</h1>
 
-				{/* UPI ID field */}
-				<div className="mb-4">
-					<label
-						className="block text-gray-700 text-sm font-bold mb-2"
-						htmlFor="upiId"
-					>
-						Enter your UPI ID
-					</label>
-					<input
-						className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-						id="upiId"
-						type="text"
-						value={upiId}
-						onChange={(e) => setUpiId(e.target.value)}
-						placeholder="Enter UPI ID"
-					/>
-				</div>
 				{/* Withdraw button */}
 				<div className="flex items-center justify-between">
 					<button
