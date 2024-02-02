@@ -1,5 +1,5 @@
 import prisma from "../db/conn.js";
-
+import { getRemainingTime } from "./SessionController.js";
 // Create Transaction
 export const createTransaction = async (req, res) => {
 	const { deposit, transactionId, withdrawal, betAmount } = req.body;
@@ -102,8 +102,9 @@ export const getAllTransactions = async (req, res) => {
 // Get User Balance
 export const getUserBalance = async (req, res) => {
 	const userId = req.user.id;
-
+	console.log(req.user.balance)
 	try {
+		
 		const user = await prisma.user.findUnique({
 			where: {
 				id: userId,
@@ -112,7 +113,7 @@ export const getUserBalance = async (req, res) => {
 				balance: true,
 			},
 		});
-
+		console.log(user.balance)
 		if (!user) {
 			return res.status(404).json({
 				message: "User not found",
@@ -171,6 +172,8 @@ export const updateUserBalanceController = async (
 	isWinner,
 	betPay
 ) => {
+	const remainingTime=getRemainingTime();
+	console.log(remainingTime)
 	try {
 		await prisma.user.update({
 			where: {
@@ -208,7 +211,7 @@ export const updateUserBalanceController = async (
 	} catch (error) {
 		throw new Error(`Error updating user balance: ${error.message}`);
 	}
-};
+}
 
 export const getAllUserBalances = async (req, res) => {
 	try {

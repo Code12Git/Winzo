@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 
@@ -7,11 +7,10 @@ const CustomToast = ({ latestBetDetails, showToast }) => {
 
   useEffect(() => {
     if (showToast && latestBetDetails !== null && toastId === null) {
-   const   id= toast.custom((t) => (
+      const id = toast.custom((t) => (
         <div
-          className={`${
-            t.visible ? 'animate-enter' : 'animate-leave'
-          } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-white ring-opacity-5`}
+          className={`${t.visible ? 'animate-enter' : 'animate-leave'
+            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-white ring-opacity-5`}
         >
           <div className="flex-1 p-4">
             <div className="flex items-start">
@@ -57,15 +56,15 @@ const CustomToast = ({ latestBetDetails, showToast }) => {
           </div>
         </div>
       ));
-            setToastId(id);
+      setToastId(id);
 
     }
 
-   else if (!showToast && toastId !== null) {
+    else if (!showToast && toastId !== null) {
       toast.dismiss(toastId);
       setToastId(null);
     }
-  }, [showToast, latestBetDetails,toastId]);
+  }, [showToast, latestBetDetails, toastId]);
 
   return null
 };

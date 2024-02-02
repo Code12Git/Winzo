@@ -2,9 +2,9 @@ import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 
 const BetResultModal = ({
- 
- 
-  
+
+
+
   onClose,
   show,
   latestBetDetails,
@@ -29,28 +29,28 @@ const BetResultModal = ({
       background: 'linear-gradient(to right, #8e2de2, #4a00e0)',
     },
   };
- 
+
   return (
     <div>
       {show && (
         <Modal
           isOpen={show}
-         onRequestClose={onClose}
+          onRequestClose={onClose}
           style={customStyles}
           contentLabel="Bet Result Modal"
         >
           <h2 className="text-2xl font-bold mb-4 text-white">Bet Result</h2>
-         {latestBetDetails !== null && (
-  latestBetDetails.isWinner ? (
-    <p className="text-xl text-white mb-6 bg-gradient-to-r from-purple-500 via-violet-400 to-red-400 bg-clip-text text-transparent">
-      Congratulations you won
-    </p>
-  ) : (
-    <p className="text-xl text-white mb-6">
-      You didn{"'"}t win this time.
-    </p>
-  )
-)}
+          {latestBetDetails !== null && (
+            latestBetDetails.isWinner ? (
+              <p className="text-xl text-white mb-6 bg-gradient-to-r from-purple-500 via-violet-400 to-red-400 bg-clip-text text-transparent">
+                Congratulations you won
+              </p>
+            ) : (
+              <p className="text-xl text-white mb-6">
+                You didn{"'"}t win this time.
+              </p>
+            )
+          )}
 
 
           <h2 className="text-2xl font-bold mb-4 text-white">

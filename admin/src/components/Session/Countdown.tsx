@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { publicRequest } from "@/helpers/axios";
 
 interface CountdownProps {
 	fetchSession: () => void;
@@ -12,63 +11,57 @@ interface CountdownState {
 
 const Countdown: React.FC<CountdownProps> = ({ fetchSession }) => {
 	const [countdown, setCountdown] = useState<CountdownState>({
-		minutes: 0,
+		minutes: 3,
 		seconds: 0,
 	});
 	const [isRed, setIsRed] = useState<boolean>(false);
 
 	useEffect(() => {
-		let countdownInterval: NodeJS.Timeout;
+		let interval: NodeJS.Timeout;
 
-		const fetchRemainingTime = async () => {
-			try {
-				const response = await publicRequest.get("/session/remaining");
-				const data = response.data;
-				const formattedTime = data.remainingTime;
+		const startCountdown = () => {
+			interval = setInterval(() => {
+				setCountdown((prevCountdown) => {
+					if (prevCountdown.seconds === 0 && prevCountdown.minutes === 0) {
+						clearInterval(interval);
+						setIsRed(true);
+						return { minutes: 3, seconds: 0 };
+					}
 
-				const timeParts = formattedTime.match(/(\d+) minutes (\d+) seconds/);
-				if (timeParts && timeParts.length === 3) {
-					const minutes = parseInt(timeParts[1]);
-					const seconds = parseInt(timeParts[2]);
-					setCountdown({ minutes, seconds });
-					startCountdown({ minutes, seconds });
-				}
-			} catch (error) {
-				console.error("Error fetching remaining time:", error);
-			}
-		};
+					const newSeconds =
+						prevCountdown.seconds === 0 ? 59 : prevCountdown.seconds - 1;
+					const newMinutes =
+						prevCountdown.seconds === 0
+							? prevCountdown.minutes - 1
+							: prevCountdown.minutes;
 
-		const startCountdown = ({ minutes, seconds }: CountdownState) => {
-			let remainingSeconds = minutes * 60 + seconds;
-
-			countdownInterval = setInterval(() => {
-				if (remainingSeconds > 0) {
-					remainingSeconds--;
-
-					const mins = Math.floor(remainingSeconds / 60);
-					const secs = remainingSeconds % 60;
-
-					setCountdown({ minutes: mins, seconds: secs });
-
-					if (remainingSeconds <= 30 && remainingSeconds > 0) {
+					if (newMinutes === 0 && newSeconds <= 30) {
 						setIsRed(true);
 					} else {
 						setIsRed(false);
 					}
-				} else {
-					setIsRed(true);
-					clearInterval(countdownInterval);
-					fetchSession();
-					fetchRemainingTime();
-				}
+
+					return { minutes: newMinutes, seconds: newSeconds };
+				});
 			}, 1000);
 		};
 
-		fetchRemainingTime();
+		startCountdown();
 
 		return () => {
-			clearInterval(countdownInterval);
+			clearInterval(interval);
 		};
+	}, []);
+
+	useEffect(() => {
+		const fetchAndReset = () => {
+			fetchSession();
+			setCountdown({ minutes: 3, seconds: 0 });
+		};
+
+		const timeout = setTimeout(fetchAndReset, 60000);
+
+		return () => clearTimeout(timeout);
 	}, [fetchSession]);
 
 	return (

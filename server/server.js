@@ -17,7 +17,7 @@ import {
 	remainingTime,
 } from "./controllers/SessionController.js";
 import modalRoute from "./routes/modal.js";
-
+import randomuserRoute from './routes/user.js'
 // Loading environment variables from the config file
 dotenv.config({ path: "./.env" });
 
@@ -26,6 +26,11 @@ const server = createServer(app);
 const io = new SocketIOServer(server);
 
 const port = process.env.PORT || 3000;
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 app.use(express.json());
 app.use(cors());
 app.use("/api/auth", authRoute);
@@ -38,7 +43,7 @@ app.use("/api/transaction", transactionRoute);
 app.use("/api/screenshot", screenshotRoute);
 app.use("/api/withdraw", withdrawRoute);
 app.use("/api/modal", modalRoute);
-
+app.use('/api/randomuser',randomuserRoute)
 app.get("/", (req, res) => {
 	res.status(200).json("Working!");
 });
